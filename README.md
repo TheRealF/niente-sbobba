@@ -103,6 +103,18 @@ npx skills add TheRealF/niente-sbobba --skill niente-sbobba --global --yes
 Oppure incolla nel tuo agente: `Installa la skill /niente-sbobba da
 https://github.com/TheRealF/niente-sbobba`
 
+## Funziona anche fuori da Claude
+
+Le istruzioni sono Markdown e il rilevatore è Python 3 senza dipendenze, quindi
+non c'è niente di legato a un modello o a uno strumento.
+
+| Dove | Come |
+| --- | --- |
+| Claude Code | `npx skills add TheRealF/niente-sbobba …`, poi `/niente-sbobba` |
+| Codex, Cursor, e chi legge `AGENTS.md` | clona il repo: il file in radice punta già alle istruzioni |
+| ChatGPT, Gemini, altri | carica `SKILL.md` e i tre file di `riferimenti/` in un progetto, oppure incollali come istruzioni |
+| Senza nessun modello | `python3 sbobba.py --frasi testo.md`, che misura e basta |
+
 ## Come si usa
 
 | Comando | Cosa fa |

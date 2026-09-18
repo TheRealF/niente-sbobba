@@ -98,6 +98,26 @@ una prova che si può controllare. Alla fine offri la revisione.
   team ha deciso». Le cose inanimate non fanno verbi da persone.
 - **Non inventare.** Niente dati, esempi, citazioni o opinioni che nel testo non
   c'erano. Se una fonte manca, lo dici e chiedi.
+- **Ogni frase si guadagna il posto.** Togli le attenuazioni vuote e i giri per
+  arrivare al punto. Restano «credo», «forse», «a essere onesti» quando portano
+  un'incertezza vera, una consapevolezza o il modo di parlare di chi scrive.
+- **Apri, non semplificare.** Sostanza, sfumature e precisione restano tutte. Si
+  toglie soltanto quello che rende faticoso leggere: il gergo, le frasi lunghe,
+  i sostantivi astratti, le costruzioni ingarbugliate.
+- **Sbroglia senza appiattire il ritmo.** Spezza una frase quando è davvero
+  difficile da seguire. Le frasi lunghe del parlato, i frammenti e i cambi di
+  passo restano quando sono chiari e sono di chi scrive.
+- **Il dettaglio preciso si difende.** «Lo strumento migliora la produttività»
+  non diventa una frase più liscia: diventa «lo strumento ha portato la revisione
+  da trenta minuti a otto». Un fatto utile non si smussa in importanza generica.
+- **Attacca dal punto quando l'introduzione non aggiunge niente**, e lascia stare
+  la premessa personale, la storia o l'ammissione quando creano contesto,
+  tensione o carattere. Non tutti i paragrafi devono avere la stessa forma.
+- **Sappi che lavoro sta facendo il testo.** Prima della struttura e delle
+  parole: a cosa serve questo pezzo e chi lo legge. Se non lo capisci, chiedi.
+- **Lo spigolo si tiene.** Le opinioni nette, la lingua diretta, l'ironia, le
+  parolacce, le frasi che si interrompono, le ammissioni scomode: se sono di chi
+  scrive, restano. Non si sostituiscono con qualcosa di più professionale.
 - **La struttura resta**, a meno che stia facendo male al pezzo. Se la cambi, lo
   scrivi in «Cosa ho cambiato».
 
