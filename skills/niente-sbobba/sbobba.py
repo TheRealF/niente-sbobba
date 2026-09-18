@@ -127,6 +127,19 @@ FORMULE = {
     "due-punti-a-effetto": r"\b(La parte migliore|Il bello|Il punto|La verità|Il risultato"
                            r"|La cosa interessante)\s*:\s+[a-zà-ù]",
     "frammento": r"(?:^|[.!?] )(Punto\.|Tutto qui\.|Ed è tutto\.|Fine della storia\.|Semplice\.|Nient'altro\.)",
+    "schiarirsi-la-voce": r"(?:^|[.;!?]\s)(Diciamocelo|Sia chiaro|Facciamo chiarezza"
+                          r"|Andiamo con ordine|Partiamo dall'inizio"
+                          r"|Chiariamo subito|Facciamola semplice|Detto questo|Sgombriamo il campo)\b",
+    "finta-rivelazione": r"\b(quello che nessuno (?:ti |vi )?dice|la parte che (?:tutti|quasi tutti) salt\w+"
+                         r"|pochi lo sanno|il segreto che non ti dicono|nessuno te lo dice"
+                         r"|quello che non ti hanno (?:mai )?detto|la verità è che|hai letto bene"
+                         r"|non sto esagerando|spoiler:|la cosa che nessuno)\b",
+    "elenco-negato": r"(?:^|[.;!?]\s)Non [^.;!?\n]{2,45}\.\s*Non [^.;!?\n]{2,45}\.\s*(?!Non )[A-ZÀ-Ù][^.;!?\n]{2,32}\.",
+    "guida-al-lettore": r"\b(come (?:puoi|potete|si può) vedere|questo punto (?:è importante|conta)"
+                        r"|questa distinzione (?:è importante|conta)"
+                        r"|in altre parole|come dicevo (?:prima|sopra)|torniamo un attimo)\b",
+    "apostrofe": r"(?:^|[.;!?]\s)(Fidati|Credimi|Pensaci(?: un attimo)?[:.]"
+                 r"|Colpo di scena:|Indovina un po'|Sorpresa:)",
     "trattino-lungo": r"—|&mdash;|–|&ndash;",
 }
 

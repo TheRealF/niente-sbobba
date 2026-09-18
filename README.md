@@ -115,6 +115,11 @@ Il lessico italiano che nessuna lista inglese ha:
   che è il trailing `-ing` inglese fatto col gerundio;
 - **gonfiaggio**: segna una svolta, una pietra miliare;
 - **attribuzione senza nome**: gli esperti concordano, gli studi dimostrano;
+- **schiarirsi la voce**: Diciamocelo, Andiamo con ordine, Facciamola semplice;
+- **finta rivelazione**: quello che nessuno ti dice, la verità è che, Spoiler:;
+- **elenco negato**: «Non è un corso. Non è un webinar. È un percorso.»;
+- **guida al lettore**: come puoi vedere, questa distinzione conta;
+- **apostrofi**: Fidati, Credimi, Pensaci un attimo;
 - **punteggiatura**: trattini lunghi, due punti a effetto, chiuse profonde.
 
 Ogni voce ha la sua cura **e le sue eccezioni**, perché una lista di divieti

@@ -43,6 +43,14 @@ trovare».
     di commento, gonfiaggio, attribuzione senza nome, avverbi di rinforzo,
     anglicismi da slide e gergo da marketing sono spariti, tranne dove sono
     citati come esempio o sono termini tecnici?
+14b. Lo schiarirsi la voce («Diciamocelo», «Andiamo con ordine»), la finta
+    rivelazione («quello che nessuno ti dice», «la verità è che»), l'elenco
+    negato («Non è un X. Non è un Y. È un Z.»), la guida al lettore («come puoi
+    vedere», «questa distinzione conta») e le apostrofi («Fidati», «Credimi»)
+    sono spariti?
+14c. Sono rimasti invece: «Attenzione:» come etichetta di un riquadro, un
+    rimando verificabile a un'altra lezione, e un «te lo dico» in prima persona
+    che ha un motivo dietro?
 15. I trattini lunghi e le lineette sono zero?
 16. Le chiuse profonde sono state **cancellate** e non riscritte in una metafora
     migliore, e il testo finisce su un fatto o su cosa fare adesso?

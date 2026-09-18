@@ -65,6 +65,63 @@ indietro» · «come abbiamo visto» · «In conclusione» · «Ultimamente» co
 Chi legge era lì. Il testo finisce sull'ultimo fatto concreto, o su cosa fare
 adesso.
 
+## Lo schiarirsi la voce
+
+«Diciamocelo» · «Sia chiaro» · «Facciamo chiarezza» · «Andiamo con ordine» ·
+«Partiamo dall'inizio» · «Chiariamo subito» · «Facciamola semplice» · «Detto
+questo» · «Sgombriamo il campo»
+
+Sono la gola che si schiarisce prima di parlare. Si tagliano e si dice la cosa.
+
+⚠️ Restano quando sono davvero la voce di chi scrive. «Te lo dico subito, da
+docente che lavora con i dati ogni giorno» è una persona che parla, non un
+riempitivo: c'è la prima persona e c'è un motivo per cui lo dice.
+
+## La finta rivelazione
+
+«Quello che nessuno ti dice» · «la parte che tutti saltano» · «pochi lo sanno» ·
+«il segreto che non ti dicono» · «quello che non ti hanno mai detto» · «la verità
+è che» · «sì, hai letto bene» · «e non sto esagerando» · «Spoiler:»
+
+Servono a mettere chi scrive dalla parte di chi sa e chi legge dalla parte di chi
+non sapeva. Si taglia l'annuncio e si fa reggere l'affermazione da sola:
+«Quello che nessuno ti dice è che il 90% del lavoro sta nella pulizia» diventa
+«Il 90% del lavoro sta nella pulizia».
+
+## L'elenco negato
+
+> Non è un corso. Non è un webinar. È un percorso.
+
+Due o più negazioni in fila e poi l'affermativa corta. È l'epanortosi moltiplicata,
+e il rimedio è lo stesso: si scrive Z.
+
+⚠️ Un elenco di errori da evitare («Non ottimizzare per mobile. Non testare.») è
+un'altra cosa, ed è legittimo: lì le negazioni sono il contenuto, non la scena.
+
+## La guida al lettore
+
+«Come puoi vedere» · «questo punto è importante» · «questa distinzione conta» ·
+«in altre parole» · «come dicevo prima» · «torniamo un attimo»
+
+Righe che escono dal discorso per dire a chi legge quanto peso dare a quello che
+ha appena letto. Se il punto è chiaro si cancellano; se non lo è, al posto ci va
+un fatto.
+
+⚠️ «Tieni a mente questa mappa: nella Lezione 11 la userai» in un corso è
+didattica, non meta-discorso: rimanda a una cosa che esiste davvero. La prova è
+se il rimando è verificabile.
+
+## Le apostrofi
+
+«Fidati» · «Credimi» · «Pensaci un attimo» · «Colpo di scena:» · «Indovina un
+po'» · «Sorpresa:»
+
+Chiedono fiducia invece di darne il motivo. Si tolgono, e si scrive il motivo.
+
+⚠️ «Attenzione:» come etichetta di un riquadro in una lezione è un'altra cosa, e
+resta: segnala un rischio vero. Diventa sbobba quando sta in mezzo alla prosa per
+fare effetto.
+
 ## Il gerundio di commento
 
 La coda che spiega il significato di quello che si è appena detto:
