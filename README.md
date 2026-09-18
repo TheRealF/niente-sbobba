@@ -23,6 +23,11 @@ sbobba lo fanno altre parole e altre costruzioni. Una spia grossa da noi è il
 
 Quattro formule in venti parole, e non ci è stato comunicato niente.
 
+Quando faccio questo esercizio in aula la reazione è sempre la stessa: la gente
+legge la frase, annuisce, e poi mi chiede se è sbagliata. No, è normale. Il punto
+è proprio quello: la sbobba non suona male, suona *neutra*. Ed è per questo che
+ti finisce dentro al testo senza che te ne accorga.
+
 ## Come decido quanto togliere
 
 Con pesi e misure, che ho preso dal mio paper
@@ -165,6 +170,25 @@ di nessuno, che è il secondo modo di suonare artificiale.
 Gli altri file: `SKILL.md` ha le regole, `eval.md` i controlli che la skill fa
 sul proprio lavoro, `sbobba.py` il rilevatore, `riferimenti/epanortosi.md` la
 figura e i suoi limiti, `riferimenti/formule.md` il lessico con le eccezioni.
+
+## Quello che non fa
+
+Te lo dico prima, così non ti aspetti la cosa sbagliata.
+
+- **Non ti dice se l'ha scritto una AI.** Chi te lo promette tira a indovinare.
+  Io ti nomino la formula e ti cito la riga, e controlli te.
+- **Non funziona in inglese.** Per quello c'è
+  [no-ai-slop](https://github.com/petergyang/no-ai-slop), che è venuto prima.
+- **Non è un correttore di bozze.** Refusi, accordi e virgole non li guarda
+  nemmeno.
+- **Non rende interessante un testo che non ha niente da dire.** Ti toglie le
+  formule. Le cose da dire ce le devi mettere te.
+
+E una cosa che capita sempre, tanto vale dirtela adesso: la prima volta che lo
+lanci sul tuo testo ti segnala una frase a cui tieni. Quella l'hai scritta te, e
+probabilmente è giusta così. Lo strumento trova **formule, non autori**, e su un
+testo scritto da una persona sbaglia cinque volte su sei. Per questo ti segnala
+invece di correggere.
 
 ## Crediti
 
