@@ -23,19 +23,20 @@ sbobba lo fanno altre parole e altre costruzioni. Una spia grossa da noi è il
 
 Quattro formule in venti parole, e non ci è stato comunicato niente.
 
-## Come decide quanto togliere
+## Come decido quanto togliere
 
-Con pesi e misure, presi dal mio paper
+Con pesi e misure, che ho preso dal mio paper
 **[Artificial Epanorthosis](https://arxiv.org/abs/2607.21498)**.
 
-La figura più riconoscibile della sbobba è l'epanortosi: «non è un corso, è un
-percorso». Il paper la misura per genere e scopre che i modelli la mettono al
-**doppio** del tasso umano in un discorso e a **un quinto** in una chiacchierata.
-E che spegnerla del tutto porta il testo **sotto** il tasso umano: zero
-correzioni suona artificiale quanto il doppio.
+La sbobba ha una figura sua, che riconosci a colpo d'occhio: l'epanortosi, cioè
+«non è un corso, è un percorso». Nel paper l'ho misurata per genere, e i modelli
+la mettono al **doppio** del tasso umano in un discorso e a **un quinto** in una
+chiacchierata. Poi ho provato a spegnerla del tutto, con un adapter addestrato
+apposta, e il testo è finito **sotto** il tasso umano. Zero correzioni suona
+finto quanto il doppio.
 
-Quindi il bersaglio è il tasso di chi scrive quel genere, e lo strumento lo
-calcola.
+Quindi non te la tolgo tutta. Te la riporto al tasso di chi scrive quel genere, e
+questi sono i numeri che uso.
 
 | Genere | Umani | Modelli | Indice |
 | --- | --- | --- | --- |
@@ -47,20 +48,20 @@ calcola.
 | Oratorio (IT) | ~14 | 39,6 | **2,8×** |
 
 Occorrenze ogni 10.000 parole. Per il promozionale una base umana pubblica non
-esiste, e lo strumento lo dice invece di inventarsela.
+ce l'ha nessuno, e lo strumento te lo dice invece di inventarsela.
 
-Due conseguenze pratiche. **Vietare una forma la sposta sulle altre**, perché
-Fontanier la classifica fra le figure di *pensiero*: tolto il «non X, ma Y»
-ricompare in «più che X, Y», «X, o meglio Y», «definirlo X è riduttivo». E
-**sul testo umano il rilevatore sbaglia**: precisione 0,82 sul generato, 0,17 su
-quello scritto da una persona, misurata su 206 finestre annotate a mano. Su un
-testo tuo una spia è un indizio da leggere, mai una sentenza.
+Due cose che vengono da lì e che mi sono costate tempo. **Se vieti una forma, la
+sposti sulle altre**: Fontanier mette l'epanortosi fra le figure di *pensiero*,
+quindi togli il «non X, ma Y» e ti ricompare in «più che X, Y», «X, o meglio Y»,
+«definirlo X è riduttivo». E **sul testo umano il rilevatore sbaglia di brutto**:
+precisione 0,82 sul generato e 0,17 su quello scritto da una persona, misurata a
+mano su 206 finestre. Sul tuo testo una spia ti dice solo di andare a guardare.
 
-## Quanto ci si può fidare del rilevatore
+## Quanto ti puoi fidare del rilevatore
 
-Poco, ed è misurato. Su dodici testi italiani, scritti da modelli che non
-sapevano cosa stavo misurando, la regex ha trovato **zero** epanortosi.
-Leggendoli, ce n'erano **quattro**:
+Poco, e te lo dimostro. Ho fatto scrivere dodici testi italiani a dei modelli
+senza dirgli cosa stavo misurando. La regex ci ha trovato **zero** epanortosi.
+Io, leggendoli, ne ho trovate **quattro**:
 
 > «Il valore vero **non sta** nel codice: **sta** nel capire come lavora un'azienda.»
 >
@@ -71,28 +72,30 @@ Leggendoli, ce n'erano **quattro**:
 > «Una biblioteca **non si misura** dal numero dei libri. **Si misura** da quante persone entrano.»
 
 Gli sfuggono perché il verbo è «sta» o «serve» invece di «è», perché il
-separatore sono i due punti, e perché la coppia è spezzata in due frasi. Il paper
-lo dichiara già: quel canale copre la famiglia «non… ma» e ha recall 0,52.
+separatore sono i due punti, e perché la coppia è spezzata in due frasi. Nel
+paper l'avevo già scritto: quel canale copre la famiglia «non… ma» e ha recall
+0,52.
 
-La skill invece le ha trovate tutte e quattro, perché a leggerla è un modello.
-E ne ha lasciate due, quelle dove la seconda parte porta un fatto nuovo.
+Poi ho dato gli stessi dodici testi alla skill, e le ha trovate tutte e quattro.
+Perché a leggerla è un modello, e un modello legge. Due le ha lasciate lì
+apposta, quelle dove la seconda parte porta un fatto nuovo.
 
-⚠️ **Lo zero del rilevatore vuol dire una cosa sola: non ha trovato la forma che
-sa cercare.** Del resto del testo non sa niente.
+⚠️ **Occhio allo zero.** Vuol dire che il rilevatore non ha trovato la forma che
+sa cercare, e del resto del tuo testo non sa niente.
 
-## Provata
+## L'ho provata
 
     python3 test/prova_sbobba.py
 
-Sessantuno casi: quelli che il rilevatore deve prendere, quelli che deve
-lasciare stare, e i buchi noti bloccati così come sono. Gira a ogni push.
-Tre prima e dopo veri stanno in [`esempi/`](esempi/).
+Sessantuno casi, che girano a ogni push: quello che il rilevatore deve prendere,
+quello che deve lasciare stare, e i buchi noti bloccati così come sono. Tre
+prima e dopo veri stanno in [`esempi/`](esempi/).
 
-⚠️ Il buco più curioso è in quei test: «Questo non è un corso. È un percorso.»,
-cioè lo specimen dell'abstract del paper, **sfugge al pattern del paper**. In
-`NEG` c'è `questa?`, che copre il femminile e non il maschile. Lo prende il
-secondo canale. Il primo resta verbatim, sennò la misura non è più confrontabile
-con quella pubblicata.
+⚠️ Il buco più bello l'ho scoperto scrivendo quei test. «Questo non è un corso.
+È un percorso.» è lo specimen dell'abstract del mio paper, e **il pattern del mio
+paper non lo vede**: dentro c'è `questa?`, che prende il femminile e si perde il
+maschile. Lo raccoglie il secondo canale. Il primo lo lascio com'è, sennò i
+numeri non sono più confrontabili con quelli che ho pubblicato.
 
 ## Installazione
 
@@ -106,7 +109,7 @@ https://github.com/TheRealF/niente-sbobba`
 ## Funziona anche fuori da Claude
 
 Le istruzioni sono Markdown e il rilevatore è Python 3 senza dipendenze, quindi
-non c'è niente di legato a un modello o a uno strumento.
+gira con qualunque modello e dentro a qualunque strumento.
 
 | Dove | Come |
 | --- | --- |
@@ -119,15 +122,14 @@ non c'è niente di legato a un modello o a uno strumento.
 
 | Comando | Cosa fa |
 | --- | --- |
-| `/niente-sbobba (testo)` | lo rivede, tiene la voce, e dice cosa ha cambiato e cosa ha lasciato stare |
-| `/niente-sbobba è sbobba questo? (testo)` | nomina le formule e cita le righe, senza riscrivere |
-| `python3 sbobba.py --frasi testo.md` | solo la misura, senza modello |
+| `/niente-sbobba (testo)` | te lo rivede, ti tiene la voce, e ti dice cosa ha cambiato e cosa ha lasciato stare |
+| `/niente-sbobba è sbobba questo? (testo)` | ti nomina le formule e ti cita le righe, senza riscrivere niente |
+| `python3 sbobba.py --frasi testo.md` | solo la misura, senza nessun modello |
 
-Il rilevatore gira su `.html`, `.md`, `.txt` e da standard input, senza
-dipendenze. Le colonne: `ind` è l'indice contro la base umana del genere, `sup`
-le altre superfici della figura, `form` le formule, `io` i segni della prima
-persona. **`io` a zero vuol dire che il testo parla come un manuale**, ed è
-spesso il difetto vero.
+Gira su `.html`, `.md`, `.txt` e da standard input. Le colonne: `ind` è l'indice
+contro la base umana del genere, `sup` le altre superfici della figura, `form` le
+formule, `io` i segni della prima persona. **Se `io` ti esce zero, il tuo testo
+parla come un manuale**, ed è quasi sempre il difetto vero.
 
 ## Cosa trova
 
@@ -148,17 +150,17 @@ Il lessico italiano che nessuna lista inglese ha:
 - **apostrofi**: Fidati, Credimi, Pensaci un attimo;
 - **punteggiatura**: trattini lunghi, due punti a effetto, chiuse profonde.
 
-Ogni voce ha la sua cura **e le sue eccezioni**, perché una lista di divieti
-senza eccezioni produce testi storti: «rappresentare» resta quando un vettore
-rappresenta una parola, «significativo» quando dietro c'è un p-value,
-«fondamentale» nei diritti fondamentali.
+Ogni voce ha la sua cura **e le sue eccezioni**, perché se vieti senza eccezioni
+ti ritrovi un testo storto: «rappresentare» resta quando un vettore rappresenta
+una parola, «significativo» quando dietro c'è un p-value, «fondamentale» nei
+diritti fondamentali.
 
 ## Una cosa da fare prima di usarla
 
-⚠️ **Riempi `riferimenti/voce.md`.** Ci si scrive chi parla, cosa non usa mai,
-cosa usa e sembra un difetto, e le frasi che l'autore ha scritto di suo pugno e
-non si toccano. Senza, la skill toglie le formule e ti restituisce una prosa
-corretta e di nessuno, che è il secondo modo di suonare artificiale.
+⚠️ **Riempi `riferimenti/voce.md`.** Scrivici chi parla, cosa non usa mai, cosa
+usa e sembra un difetto, e le frasi che hai scritto di tuo pugno e che nessuno
+deve toccare. Senza, ti toglie le formule e ti restituisce una prosa corretta e
+di nessuno, che è il secondo modo di suonare artificiale.
 
 Gli altri file: `SKILL.md` ha le regole, `eval.md` i controlli che la skill fa
 sul proprio lavoro, `sbobba.py` il rilevatore, `riferimenti/epanortosi.md` la
@@ -171,10 +173,10 @@ L'idea di impacchettare tutto questo come skill viene da
 la stessa cosa per l'inglese. Qui il lessico è italiano e il criterio viene dal
 paper.
 
-La ricerca è **Federico Boggia** (aka TheRealF aka io), *Artificial
-Epanorthosis*, arXiv:2607.21498. I pattern del canale principale sono copiati
-verbatim dallo script di valutazione del paper (§7.8), così la misura qui
-coincide con quella pubblicata.
+La ricerca è mia: **Federico Boggia** (aka TheRealF aka io), *Artificial
+Epanorthosis*, arXiv:2607.21498. I pattern del canale principale li ho copiati
+verbatim dal mio script di valutazione (§7.8), così quello che misuri qui è
+quello che ho pubblicato là.
 
 ## Licenza
 
