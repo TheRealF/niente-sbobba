@@ -27,6 +27,63 @@ Quando faccio questo esercizio in aula la reazione è sempre la stessa: la gente
 legge la frase, annuisce, e poi mi chiede se è sbagliata. No, è normale. Il punto
 è proprio quello: la sbobba non suona male, suona *neutra*. Ed è per questo che
 ti finisce dentro al testo senza che te ne accorga.
+## Come si usa
+
+```bash
+npx skills add TheRealF/niente-sbobba --skill niente-sbobba --global --yes
+```
+
+Oppure incolla nel tuo agente: `Installa la skill /niente-sbobba da
+https://github.com/TheRealF/niente-sbobba`
+
+Poi:
+
+| Comando | Cosa fa |
+| --- | --- |
+| `/niente-sbobba (testo)` | te lo rivede, ti tiene la voce, e ti dice cosa ha cambiato e cosa ha lasciato stare |
+| `/niente-sbobba è sbobba questo? (testo)` | ti nomina le formule e ti cita le righe, senza riscrivere niente |
+| `python3 sbobba.py --frasi testo.md` | solo la misura, senza nessun modello |
+
+Il rilevatore da solo, se vuoi guardare un testo in fretta. Nel repo c'è un file
+di prova, così vedi subito che aria tira:
+
+```
+$ python3 skills/niente-sbobba/sbobba.py --frasi esempi/sbobba.txt
+
+file                 genere        parole epan   /10k  ind  sup  form   /1k  io
+esempi/sbobba.txt    promozionale      90    2  222.2    —    1    11 122.2   0
+
+--- formule per tipo ---
+riempitivi 1   svuotaverbi 1   permette-di 1   la-chiave 1   mondo-oggi 1
+gerundio-commento 1   attribuzione-vaga 1   rinforzi 1   due-punti-a-effetto 1
+schiarirsi-la-voce 1   finta-rivelazione 1
+
+  EPAN [non…, è] Non è un corso, è
+  EPAN [frase negata + affermata] Non è un corso, è un percorso di crescita. Gli
+       esperti concordano: la chiave è partire dal lavoro vero.
+```
+
+Novanta parole, undici formule e due epanortosi. Fa ridere, ma quel paragrafo lo
+trovi su un sito vero su tre.
+
+`ind` è l'indice contro la base umana del genere, `sup` le altre superfici della
+figura, `form` le formule, `io` i segni della prima persona. **Se `io` ti esce
+zero, il tuo testo parla come un manuale**, ed è quasi sempre il difetto vero.
+
+Gira su `.html`, `.md`, `.txt` e da standard input, ed è Python 3 senza
+dipendenze.
+
+### Anche fuori da Claude
+
+Le istruzioni sono Markdown, quindi gira con qualunque modello e dentro a
+qualunque strumento.
+
+| Dove | Come |
+| --- | --- |
+| Claude Code | `npx skills add …`, poi `/niente-sbobba` |
+| Codex, Cursor, e chi legge `AGENTS.md` | clona il repo: il file in radice punta già alle istruzioni |
+| ChatGPT, Gemini, altri | carica `SKILL.md` e i tre file di `riferimenti/` in un progetto |
+| Senza nessun modello | `python3 sbobba.py --frasi testo.md` |
 
 ## Come decido quanto togliere
 
@@ -61,11 +118,10 @@ quindi togli il «non X, ma Y» e ti ricompare in «più che X, Y», «X, o megl
 «definirlo X è riduttivo». E **sul testo umano il rilevatore sbaglia di brutto**:
 precisione 0,82 sul generato e 0,17 su quello scritto da una persona, misurata a
 mano su 206 finestre. Sul tuo testo una spia ti dice solo di andare a guardare.
-
 ## Quanto ti puoi fidare del rilevatore
 
-Poco, e te lo dimostro. Ho fatto scrivere dodici testi italiani a dei modelli
-senza dirgli cosa stavo misurando. La regex ci ha trovato **zero** epanortosi.
+Ho fatto scrivere dodici testi italiani a dei modelli senza dirgli cosa stavo
+misurando. La regex ci ha trovato **zero** epanortosi.
 Io, leggendoli, ne ho trovate **quattro**:
 
 > «Il valore vero **non sta** nel codice: **sta** nel capire come lavora un'azienda.»
@@ -87,7 +143,6 @@ apposta, quelle dove la seconda parte porta un fatto nuovo.
 
 ⚠️ **Occhio allo zero.** Vuol dire che il rilevatore non ha trovato la forma che
 sa cercare, e del resto del tuo testo non sa niente.
-
 ## L'ho provata
 
     python3 test/prova_sbobba.py
@@ -101,41 +156,6 @@ prima e dopo veri stanno in [`esempi/`](esempi/).
 paper non lo vede**: dentro c'è `questa?`, che prende il femminile e si perde il
 maschile. Lo raccoglie il secondo canale. Il primo lo lascio com'è, sennò i
 numeri non sono più confrontabili con quelli che ho pubblicato.
-
-## Installazione
-
-```bash
-npx skills add TheRealF/niente-sbobba --skill niente-sbobba --global --yes
-```
-
-Oppure incolla nel tuo agente: `Installa la skill /niente-sbobba da
-https://github.com/TheRealF/niente-sbobba`
-
-## Funziona anche fuori da Claude
-
-Le istruzioni sono Markdown e il rilevatore è Python 3 senza dipendenze, quindi
-gira con qualunque modello e dentro a qualunque strumento.
-
-| Dove | Come |
-| --- | --- |
-| Claude Code | `npx skills add TheRealF/niente-sbobba …`, poi `/niente-sbobba` |
-| Codex, Cursor, e chi legge `AGENTS.md` | clona il repo: il file in radice punta già alle istruzioni |
-| ChatGPT, Gemini, altri | carica `SKILL.md` e i tre file di `riferimenti/` in un progetto, oppure incollali come istruzioni |
-| Senza nessun modello | `python3 sbobba.py --frasi testo.md`, che misura e basta |
-
-## Come si usa
-
-| Comando | Cosa fa |
-| --- | --- |
-| `/niente-sbobba (testo)` | te lo rivede, ti tiene la voce, e ti dice cosa ha cambiato e cosa ha lasciato stare |
-| `/niente-sbobba è sbobba questo? (testo)` | ti nomina le formule e ti cita le righe, senza riscrivere niente |
-| `python3 sbobba.py --frasi testo.md` | solo la misura, senza nessun modello |
-
-Gira su `.html`, `.md`, `.txt` e da standard input. Le colonne: `ind` è l'indice
-contro la base umana del genere, `sup` le altre superfici della figura, `form` le
-formule, `io` i segni della prima persona. **Se `io` ti esce zero, il tuo testo
-parla come un manuale**, ed è quasi sempre il difetto vero.
-
 ## Cosa trova
 
 Il lessico italiano che nessuna lista inglese ha:
@@ -159,18 +179,6 @@ Ogni voce ha la sua cura **e le sue eccezioni**, perché se vieti senza eccezion
 ti ritrovi un testo storto: «rappresentare» resta quando un vettore rappresenta
 una parola, «significativo» quando dietro c'è un p-value, «fondamentale» nei
 diritti fondamentali.
-
-## Una cosa da fare prima di usarla
-
-⚠️ **Riempi `riferimenti/voce.md`.** Scrivici chi parla, cosa non usa mai, cosa
-usa e sembra un difetto, e le frasi che hai scritto di tuo pugno e che nessuno
-deve toccare. Senza, ti toglie le formule e ti restituisce una prosa corretta e
-di nessuno, che è il secondo modo di suonare artificiale.
-
-Gli altri file: `SKILL.md` ha le regole, `eval.md` i controlli che la skill fa
-sul proprio lavoro, `sbobba.py` il rilevatore, `riferimenti/epanortosi.md` la
-figura e i suoi limiti, `riferimenti/formule.md` il lessico con le eccezioni.
-
 ## Quello che non fa
 
 Te lo dico prima, così non ti aspetti la cosa sbagliata.
@@ -189,7 +197,16 @@ lanci sul tuo testo ti segnala una frase a cui tieni. Quella l'hai scritta te, e
 probabilmente è giusta così. Lo strumento trova **formule, non autori**, e su un
 testo scritto da una persona sbaglia cinque volte su sei. Per questo ti segnala
 invece di correggere.
+## Una cosa da fare prima di usarla
 
+⚠️ **Riempi `riferimenti/voce.md`.** Scrivici chi parla, cosa non usa mai, cosa
+usa e sembra un difetto, e le frasi che hai scritto di tuo pugno e che nessuno
+deve toccare. Senza, ti toglie le formule e ti restituisce una prosa corretta e
+di nessuno, che è il secondo modo di suonare artificiale.
+
+Gli altri file: `SKILL.md` ha le regole, `eval.md` i controlli che la skill fa
+sul proprio lavoro, `sbobba.py` il rilevatore, `riferimenti/epanortosi.md` la
+figura e i suoi limiti, `riferimenti/formule.md` il lessico con le eccezioni.
 ## Crediti
 
 L'idea di impacchettare tutto questo come skill viene da
@@ -201,7 +218,6 @@ La ricerca è mia: **Federico Boggia** (aka TheRealF aka io), *Artificial
 Epanorthosis*, arXiv:2607.21498. I pattern del canale principale li ho copiati
 verbatim dal mio script di valutazione (§7.8), così quello che misuri qui è
 quello che ho pubblicato là.
-
 ## Licenza
 
 MIT.
