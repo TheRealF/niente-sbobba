@@ -80,6 +80,20 @@ E ne ha lasciate due, quelle dove la seconda parte porta un fatto nuovo.
 ⚠️ **Lo zero del rilevatore vuol dire una cosa sola: non ha trovato la forma che
 sa cercare.** Del resto del testo non sa niente.
 
+## Provata
+
+    python3 test/prova_sbobba.py
+
+Sessantuno casi: quelli che il rilevatore deve prendere, quelli che deve
+lasciare stare, e i buchi noti bloccati così come sono. Gira a ogni push.
+Tre prima e dopo veri stanno in [`esempi/`](esempi/).
+
+⚠️ Il buco più curioso è in quei test: «Questo non è un corso. È un percorso.»,
+cioè lo specimen dell'abstract del paper, **sfugge al pattern del paper**. In
+`NEG` c'è `questa?`, che copre il femminile e non il maschile. Lo prende il
+secondo canale. Il primo resta verbatim, sennò la misura non è più confrontabile
+con quella pubblicata.
+
 ## Installazione
 
 ```bash

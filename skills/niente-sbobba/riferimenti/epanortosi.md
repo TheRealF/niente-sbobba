@@ -126,6 +126,23 @@ sei correzioni mancate erano marcate, ma da «cioè», «diciamo», «come potre
 dire», che il canale lessicale non implementa. È il canale a essere stretto, non
 il parlato a essere senza marcatori.
 
+## Due buchi noti, e dove si coprono
+
+⚠️ **Lo specimen del paper sfugge al pattern del paper.** «Questo non è un
+corso. È un percorso.» è l'esempio dell'abstract, e il canale principale non lo
+vede: in `NEG` c'è `questa? non è`, che copre «quest» e «questa» ma non
+«questo». Il dimostrativo femminile passa, il maschile no. Lo prende il canale
+delle altre superfici, ed è uno dei motivi per cui quel canale esiste.
+
+⚠️ **«Non che sia sbagliato, è solo lungo»** scatta come epanortosi e non lo è:
+è un modo di dire. `IDIT` lo esclude da `RE_NONMA` ma non da `RE_NONVIRG`. È uno
+dei sovra-scatti che stanno dietro alla precisione di 0,17 sul testo umano.
+
+Tutti e due restano **così come sono**: i pattern sono copiati verbatim, e
+correggerli qui scollegherebbe la misura da quella pubblicata. Si coprono nel
+secondo canale, che serve a questo. Stanno bloccati in `test/prova_sbobba.py`,
+così se un giorno cambiano ce ne accorgiamo.
+
 ## Falsi positivi da conoscere
 
 Non si «correggono»:
