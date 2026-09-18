@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/niente-sbobba.png" alt="niente sbobba" width="760">
+</p>
+
 # Niente sbobba
 
 Toglie da un testo italiano le formule che lo fanno suonare generato da una AI,
