@@ -158,7 +158,8 @@ maschile. Lo raccoglie il secondo canale. Il primo lo lascio com'è, sennò i
 numeri non sono più confrontabili con quelli che ho pubblicato.
 ## Cosa trova
 
-Il lessico italiano che nessuna lista inglese ha:
+Tredici famiglie. Le prime due sono la spia italiana per eccellenza, e in
+inglese non esistono proprio:
 
 - **verbi svuotati**: rappresenta, costituisce, permette di, è in grado di;
 - **riempitivi**: fondamentale, cruciale, essenziale, strategico;
@@ -179,24 +180,25 @@ Ogni voce ha la sua cura **e le sue eccezioni**, perché se vieti senza eccezion
 ti ritrovi un testo storto: «rappresentare» resta quando un vettore rappresenta
 una parola, «significativo» quando dietro c'è un p-value, «fondamentale» nei
 diritti fondamentali.
+
 ## Quello che non fa
 
-Te lo dico prima, così non ti aspetti la cosa sbagliata.
+Se un testo l'ha scritto una AI, questa skill non te lo dice: quelli che lo
+promettono tirano a indovinare, e io preferisco nominarti la formula e citarti la
+riga, così vai a controllare te. Sull'inglese non ci provo nemmeno, perché per
+quello c'è già [no-ai-slop](https://github.com/petergyang/no-ai-slop). Refusi,
+accordi e virgole li lascia dove stanno: per quelli ti serve un correttore di
+bozze, che è un altro mestiere.
 
-- **Non ti dice se l'ha scritto una AI.** Chi te lo promette tira a indovinare.
-  Io ti nomino la formula e ti cito la riga, e controlli te.
-- **Non funziona in inglese.** Per quello c'è
-  [no-ai-slop](https://github.com/petergyang/no-ai-slop), che è venuto prima.
-- **Non è un correttore di bozze.** Refusi, accordi e virgole non li guarda
-  nemmeno.
-- **Non rende interessante un testo che non ha niente da dire.** Ti toglie le
-  formule. Le cose da dire ce le devi mettere te.
+Il limite grosso però è un altro, e conviene saperlo prima di installarla. Le
+formule te le toglie. Le cose da dire ce le devi mettere te. Su un testo che non
+ha niente da dire ti restituisce un testo pulito che non ha niente da dire.
 
-E una cosa che capita sempre, tanto vale dirtela adesso: la prima volta che lo
-lanci sul tuo testo ti segnala una frase a cui tieni. Quella l'hai scritta te, e
-probabilmente è giusta così. Lo strumento trova **formule, non autori**, e su un
-testo scritto da una persona sbaglia cinque volte su sei. Per questo ti segnala
-invece di correggere.
+La prima volta che lo lanci sul tuo testo ti segnala una frase a cui tieni.
+Capita a tutti. L'hai scritta te, e probabilmente è giusta così.
+Lo strumento trova **formule, non autori**, e su un testo scritto da una persona
+sbaglia cinque volte su sei. Per questo ti segnala invece di correggere.
+
 ## Una cosa da fare prima di usarla
 
 ⚠️ **Riempi `riferimenti/voce.md`.** Scrivici chi parla, cosa non usa mai, cosa
