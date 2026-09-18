@@ -56,6 +56,60 @@ generato e 0,17 su quello umano**: le persone usano gli stessi marcatori per un
 contrasto qualsiasi. Da qui la regola operativa: su un testo scritto da qualcuno,
 una spia è un indizio da leggere, non un errore da correggere.
 
+## Quanto vale il rilevatore, misurato
+
+Il rilevatore è un **indizio, non un giudice**, e conviene sapere quanto stretto è
+prima di fidarsene.
+
+Prova fatta su dodici testi italiani di circa 250 parole (quattro oratori,
+quattro promozionali, quattro argomentativi), scritti da tre modelli a cui non
+era stato detto cosa si stava misurando.
+
+| | epanortosi trovate |
+| --- | --- |
+| Il rilevatore, sui dodici testi | **0** |
+| Una persona che legge | **4** |
+
+Le quattro che la regex non ha visto:
+
+- «Il valore vero **non sta** nel codice o nei server: **sta** nel capire come
+  lavora un'azienda.»
+- «**Non serve** nessuna esperienza precedente, **serve** voglia di guardare le
+  cose con più attenzione.»
+- «**Non inseguiamo** lo stile del momento: cerchiamo edifici che fra vent'anni
+  siano ancora piacevoli da attraversare.»
+- «Una biblioteca **non si misura** dal numero dei libri. **Si misura** da quante
+  persone, uscendo di casa senza una ragione precisa, finiscono per entrare.»
+
+Il motivo sta nel paper, che lo dichiara: il canale lessicale implementa la
+famiglia «non… ma» e ha una recall misurata di 0,52. Qui gli sfuggono perché il
+verbo è «sta» o «serve» invece di «è», perché il separatore sono i due punti, e
+perché la coppia è spezzata in due frasi che la sua finestra non tiene insieme.
+
+**Quello che funziona è la skill, che la legge un modello.** Sugli stessi dodici
+testi, un modello che segue queste istruzioni ha trovato e corretto tutte e
+quattro, più altre forme implicite, e ne ha lasciate due apposta: quelle in cui
+la seconda parte porta un fatto nuovo.
+
+| | prima | dopo |
+| --- | --- | --- |
+| Epanortosi (conteggio a mano) | 4 | 2 |
+| Nei testi promozionali | 3 | 0 |
+| Parole | 3.105 | 3.005 |
+| Numeri, date e nomi propri persi | | 0 |
+
+Le due rimaste sono queste, e restano perché la correzione porta informazione:
+
+> «Con la metà dei conferitori il prezzo non lo tratti più, lo subisci.»
+> «Quei soldi non sono spariti: si sono spostati nelle periferie e nei paesi.»
+
+Nel promozionale invece si va a zero, perché lì una base umana non esiste e la
+regola la sceglie chi firma.
+
+⚠️ **La morale operativa**: il rilevatore serve a guardare un testo lungo in
+fretta e a confrontare un prima con un dopo. Non serve a dire che un testo è
+pulito. Se dà zero, vuol dire che non ha trovato la forma che sa cercare.
+
 ## Installazione
 
 Incolla questo in Claude Code, Codex o nel tuo agente:
