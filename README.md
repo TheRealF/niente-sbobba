@@ -64,7 +64,7 @@ schiarirsi-la-voce 1   finta-rivelazione 1
 figura, `form` le formule, `io` i segni della prima persona. **Se `io` ti esce
 zero, il tuo testo parla come un manuale, può essere positivo o negativo, chiaramente dipende dai casi d'uso**.
 
-Niente Sbobba gira su `.html`, `.md`, `.txt` e da standard input, ed è Python 3 senza
+Niente sbobba gira su `.html`, `.md`, `.txt` e da standard input, ed è Python 3 senza
 dipendenze.
 
 ### Confrontare un prima e un dopo
@@ -113,16 +113,68 @@ qualunque strumento.
 Con pesi e misure, che ho preso dal mio paper
 **[Artificial Epanorthosis](https://arxiv.org/abs/2607.21498)**.
 
+La figura più riconoscibile della sbobba è l'epanortosi. «Non è un corso, è un
+percorso». L'ho misurata per genere. I modelli la mettono al **doppio** del tasso
+umano in un discorso. In una chiacchierata scendono a **un quinto**.
+
+Poi ho provato a spegnerla del tutto, con un adapter addestrato apposta. Il testo
+è finito **sotto** il tasso umano. Zero correzioni suona finto quanto il doppio.
+
+Quindi non te la tolgo tutta. Te la riporto al tasso di chi scrive quel genere.
+Questi sono i numeri che uso.
+
+| Genere | Umani | Modelli |
+| --- | --- | --- |
+| Enciclopedico | 1,2 | 1,4 |
+| Giornalistico | 2,4 | 2,0 |
+| Narrativo | 7,5 | 4,1 |
+| Domanda e risposta | 8,2 | **1,3** |
+| Argomentativo (IT) | ~12 | **56,9** |
+| Oratorio (IT) | ~14 | **39,6** |
+
+Occorrenze ogni 10.000 parole. Per il promozionale una base umana non ce l'ha
+nessuno. Lo strumento te lo dice invece di inventarsela.
+
+## Quanto ti puoi fidare del rilevatore
+
+Poco, e lo dico io che l'ho scritto. Ho fatto scrivere dodici testi italiani a
+dei modelli, senza dirgli cosa stavo misurando. La regex ci ha trovato **zero**
+epanortosi. Io leggendoli ne ho trovate **quattro**. Tipo questa:
+
+> «Non serve nessuna esperienza precedente, serve voglia di guardare le cose.»
+
+Gli sfugge perché il verbo è «serve» invece di «è». Nel paper l'avevo già
+scritto: quel canale ha recall 0,52, e sul testo scritto da una persona la
+precisione scende a 0,17.
+
+La skill invece le ha trovate tutte e quattro, perché a leggerla è un modello.
+
+⚠️ **Occhio allo zero.** Vuol dire che il rilevatore non ha trovato la forma che
+sa cercare. Del resto del tuo testo non sa niente.
+
+## Quello che non fa
+
+Se un testo l'ha scritto una AI, questa skill non te lo dice. Chi te lo promette
+tira a indovinare. Io preferisco nominarti la formula e citarti la riga, poi
+controlli te. In inglese non ci provo nemmeno, per quello c'è già
+[no-ai-slop](https://github.com/petergyang/no-ai-slop). Refusi, accordi e virgole
+li lascia dove stanno.
+
+Il limite grosso però è un altro. Le formule te le toglie. Le cose da dire ce le
+devi mettere te. Su un testo che non ha niente da dire ti restituisce un testo
+pulito che non ha niente da dire.
 
 ## Una cosa da fare prima di usarla
 
-⚠️ **Riempi `riferimenti/voce.md`.** Scrivi chi parla. Tono di voci, stile, esempi. Inserisci frasi che hai scritto di tuo pugno, dai riferimenti alla skill. 
+⚠️ **Riempi `riferimenti/voce.md`.** Scrivi chi parla. Tono di voce, stile, esempi. Inserisci frasi che hai scritto di tuo pugno, dai riferimenti alla skill.
 
+Senza quel file ti toglie le formule e ti restituisce una prosa corretta e di
+nessuno. È il secondo modo di suonare artificiale.
 
 Gli altri file. `SKILL.md` ha le regole. `eval.md` i controlli che la skill fa
 sul proprio lavoro. `sbobba.py` è il rilevatore. `riferimenti/epanortosi.md`
 spiega la figura e i suoi limiti, `riferimenti/formule.md` il lessico con le
-eccezioni.
+eccezioni. I casi di prova stanno in `test/`, sono 65 e girano a ogni push.
 
 ## Crediti
 
