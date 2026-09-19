@@ -1,0 +1,35 @@
+name: 'Niente sbobba'
+description: "Cerca in un testo italiano le formule che lo fanno percepire come generato da una AI, e fa fallire il controllo se sono troppe."
+author: 'Federico Boggia'
+branding:
+  icon: 'edit-3'
+  color: 'red'
+
+inputs:
+  percorsi:
+    description: 'File o cartelle da guardare, separati da uno spazio.'
+    required: false
+    default: '.'
+  genere:
+    description: 'enciclopedico, giornalistico, accademico, didattico, narrativo, conversazionale, argomentativo, oratorio, promozionale. Se lo lasci vuoto lo indovina dal percorso.'
+    required: false
+    default: ''
+  max-formule:
+    description: 'Fa fallire se un file supera queste formule ogni 1000 parole. Vuoto per non fare fallire niente.'
+    required: false
+    default: ''
+  max-indice:
+    description: "Fa fallire se un file supera questo indice di epanortosi. Vuoto per non fare fallire niente."
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - shell: bash
+      run: |
+        ARG=""
+        [ -n "${{ inputs.genere }}" ] && ARG="$ARG --genere ${{ inputs.genere }}"
+        [ -n "${{ inputs.max-formule }}" ] && ARG="$ARG --max-formule ${{ inputs.max-formule }}"
+        [ -n "${{ inputs.max-indice }}" ] && ARG="$ARG --max-indice ${{ inputs.max-indice }}"
+        python3 "${{ github.action_path }}/skills/niente-sbobba/sbobba.py" --frasi $ARG ${{ inputs.percorsi }}

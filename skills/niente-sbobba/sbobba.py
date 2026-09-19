@@ -299,6 +299,74 @@ def raccogli(args: list) -> list:
     return sorted(set(out))
 
 
+
+def confronta(prima: str, dopo: str, genere: str | None) -> int:
+    """Due file o due cartelle, e cosa è cambiato in mezzo.
+
+    ⚠️ Esce con 1 se una pagina ha PIÙ epanortosi o PIÙ formule di prima. È il
+    controllo che conta dopo una revisione automatica: correggendo un difetto se
+    ne scrive uno nuovo, e capita più spesso di quanto sembri.
+    """
+    def mappa(base):
+        out = {}
+        if os.path.isdir(base):
+            for f in raccogli([base]):
+                t = testo(f)
+                if t:
+                    out[os.path.relpath(f, base)] = analizza(f, t, genere)
+        else:
+            t = testo(base)
+            if t:
+                out[os.path.basename(base)] = analizza(base, t, genere)
+        return out
+
+    # Due file singoli si accoppiano fra loro anche se si chiamano diverso:
+    # è il caso normale, «questo prima e questo dopo». Due cartelle invece si
+    # accoppiano per nome, perché lì i file sono tanti.
+    if os.path.isfile(prima) and os.path.isfile(dopo):
+        ta, tb = testo(prima), testo(dopo)
+        if not ta or not tb:
+            print("Uno dei due file non contiene testo leggibile.")
+            return 1
+        a = {os.path.basename(prima): analizza(prima, ta, genere)}
+        b = {os.path.basename(prima): analizza(dopo, tb, genere)}
+    else:
+        a, b = mappa(prima), mappa(dopo)
+    comuni = sorted(set(a) & set(b))
+    if not comuni:
+        print("Niente da confrontare: i due lati non hanno nessun file in comune.")
+        return 1
+
+    print(f"\n{'file':44}{'epan':>12}{'formule':>13}{'io':>10}{'parole':>12}")
+    peggio = []
+    for k in comuni:
+        x, y = a[k], b[k]
+        segno = ""
+        if y["epanortosi"] > x["epanortosi"] or y["formule"] > x["formule"]:
+            segno = "  <-- PEGGIO"
+            peggio.append(k)
+        elif y["parole"] < x["parole"] * 0.88:
+            segno = "  <-- accorciato oltre il 12%"
+        print(f"{k[:44]:44}{x['epanortosi']:5}->{y['epanortosi']:<6}"
+              f"{x['formule']:6}->{y['formule']:<6}"
+              f"{x['io']:4}->{y['io']:<5}{x['parole']:6}->{y['parole']:<6}{segno}")
+
+    def somma(m, campo):
+        # ⚠️ Solo i file in comune: sommare anche quelli che stanno da una parte
+        # sola fa uscire totali che non si possono confrontare.
+        return sum(m[k][campo] for k in comuni)
+    pa, pb = somma(a, "parole"), somma(b, "parole")
+    print(f"\n  epanortosi  {somma(a, 'epanortosi')} -> {somma(b, 'epanortosi')}")
+    print(f"  formule     {somma(a, 'formule')} -> {somma(b, 'formule')}")
+    print(f"  io          {somma(a, 'io')} -> {somma(b, 'io')}")
+    print(f"  parole      {pa} -> {pb}  ({100 * (pb - pa) / pa:+.1f}%)")
+    if peggio:
+        print(f"\n⚠️ {len(peggio)} file hanno più sbobba di prima: {', '.join(peggio[:6])}")
+        return 1
+    print("\nNessun file è peggiorato.")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Misura la sbobba AI in un testo italiano.")
     ap.add_argument("percorsi", nargs="*", default=["."])
@@ -307,7 +375,20 @@ def main() -> int:
     ap.add_argument("--genere", choices=sorted(BASI))
     ap.add_argument("--soglia", type=float, default=0.0,
                     help="mostra solo i file oltre questo indice o queste formule per 1000")
+    ap.add_argument("--max-indice", type=float, metavar="N", dest="max_indice",
+                    help="esce con 1 se un file supera questo indice di epanortosi")
+    ap.add_argument("--max-formule", type=float, metavar="N", dest="max_formule",
+                    help="esce con 1 se un file supera queste formule ogni 1000 parole")
+    ap.add_argument("--confronta", nargs=2, metavar=("PRIMA", "DOPO"),
+                    help="mette a confronto due file o due cartelle e dice cosa e' cambiato")
     a = ap.parse_args()
+
+    # ⚠️ Il confronto e' il modo in cui questo strumento serve davvero: da solo
+    # dice se un testo ha delle spie, e un numero senza un prima non vuol dire
+    # granche'. Con un prima e un dopo dice se la revisione ha tolto o aggiunto,
+    # ed e' l'unica domanda a cui una regex puo' rispondere bene.
+    if a.confronta:
+        return confronta(a.confronta[0], a.confronta[1], a.genere)
 
     esiti, saltati = [], []
     if a.percorsi == ["-"]:
@@ -359,6 +440,12 @@ def main() -> int:
         for f in saltati[:8]:
             print(f"     {f}")
 
+    sopra = []
+    if a.max_indice is not None:
+        sopra += [r["file"] for r in esiti if (r["indice"] or 0) > a.max_indice]
+    if a.max_formule is not None:
+        sopra += [r["file"] for r in esiti if r["formule_x1000"] > a.max_formule]
+
     if a.frasi:
         print("\n=== righe da rivedere ===")
         for r in esiti:
@@ -372,6 +459,11 @@ def main() -> int:
             for k, ss in r["esempi_c2"].items():
                 for s in ss:
                     print(f"  form [{k}] …{re.sub(chr(10), ' ', s)[:130]}…")
+
+    if sopra:
+        unici = sorted(set(sopra))
+        print(f"\n⚠️ {len(unici)} file oltre la soglia: {', '.join(unici[:6])}")
+        return 1
     return 0
 
 

@@ -186,6 +186,29 @@ prova("l'html salta il codice",
       "print" not in (sb.da_sorgente(
           "<article><p>testo</p><pre>print(1)</pre></article>", "a.html") or ""))
 
+# ------------------------------------------------------------- confronto
+# Il confronto e le soglie servono a mettere il rilevatore dentro a un
+# controllo automatico: senza un codice di uscita non puo' fermare niente.
+import io as _io
+import contextlib as _cx
+
+def _confronta(a, b):
+    buf = _io.StringIO()
+    with _cx.redirect_stdout(buf):
+        esito = sb.confronta(a, b, None)
+    return esito, buf.getvalue()
+
+ESEMPI = RADICE / "esempi"
+codice, uscita = _confronta(str(ESEMPI / "prima-promozionale-1.txt"),
+                            str(ESEMPI / "dopo-promozionale-1.txt"))
+prova("confronto: due file con nomi diversi si accoppiano", "Niente da confrontare" not in uscita)
+prova("confronto: una revisione buona esce con 0", codice == 0)
+
+codice, uscita = _confronta(str(ESEMPI / "dopo-promozionale-1.txt"),
+                            str(ESEMPI / "prima-promozionale-1.txt"))
+prova("confronto: al contrario segnala il peggioramento", codice == 1)
+prova("confronto: lo dice a schermo", "PEGGIO" in uscita)
+
 # ---------------------------------------------------------------------------
 falliti = [n for n, ok in esiti if not ok]
 print(f"\n{len(esiti) - len(falliti)}/{len(esiti)} casi a posto")

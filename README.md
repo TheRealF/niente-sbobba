@@ -73,6 +73,35 @@ zero, il tuo testo parla come un manuale**, ed è quasi sempre il difetto vero.
 Gira su `.html`, `.md`, `.txt` e da standard input, ed è Python 3 senza
 dipendenze.
 
+### Confrontare un prima e un dopo
+
+Un numero da solo dice poco. Con un prima e un dopo dice se la revisione ha
+tolto o ha aggiunto, ed è l'unica domanda a cui una regex risponde bene:
+
+```bash
+python3 sbobba.py --confronta bozza.md rivisto.md
+python3 sbobba.py --confronta sito-vecchio/ sito-nuovo/
+```
+
+Esce con 1 se una pagina ha **più** sbobba di prima. Succede: correggendo un
+difetto se ne scrive uno nuovo, e capita più spesso di quanto sembri.
+
+### Dentro a un controllo automatico
+
+```bash
+python3 sbobba.py --max-formule 3 --max-indice 1.5 testi/
+```
+
+Esce con 1 se un file supera le soglie, così puoi fermare una pubblicazione.
+Su GitHub c'è anche l'azione già pronta:
+
+```yaml
+- uses: TheRealF/niente-sbobba@main
+  with:
+    percorsi: docs/
+    max-formule: '3'
+```
+
 ### Anche fuori da Claude
 
 Le istruzioni sono Markdown, quindi gira con qualunque modello e dentro a
