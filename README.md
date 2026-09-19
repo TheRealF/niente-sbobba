@@ -13,20 +13,21 @@ niente più sbobba per te amico dell'internet!
 
 ## Il problema
 
-Le liste anti-slop che girano sono inglesi: *delve*, *tapestry*, *leverage*,
-*it's not X, it's Y*. Tradotte non funzionano, perché in italiano l'effetto
-sbobba lo fanno altre parole e altre costruzioni. Una spia grossa da noi è il
-**verbo svuotato**, che in inglese non esiste:
+Le liste anti-slop che girano sono inglesi. *Delve*, *tapestry*, *leverage*,
+*it's not X, it's Y*. Tradotte non servono a niente. In italiano l'effetto sbobba
+lo fanno altre parole. La spia più grossa da noi è il **verbo svuotato**, e in
+inglese non esiste proprio:
 
 > L'integrazione **rappresenta** una svolta **fondamentale** e **permette di**
 > ridurre i tempi, **dimostrando** l'attenzione all'innovazione.
 
 Quattro formule in venti parole, e non ci è stato comunicato niente.
 
-Quando faccio questo esercizio in aula la reazione è sempre la stessa: la gente
-legge la frase, annuisce, e poi mi chiede se è sbagliata. No, è normale. Il punto
-è proprio quello: la sbobba non suona male, suona *neutra*. Ed è per questo che
-ti finisce dentro al testo senza che te ne accorga.
+Quando la faccio leggere in aula succede sempre la stessa cosa. La gente
+annuisce. Poi mi chiede se c'è un errore. Errori non ce ne sono, e il punto è
+quello. La sbobba non suona male. Suona neutra. Per questo ti finisce dentro al
+testo senza che te ne accorga.
+
 ## Come si usa
 
 ```bash
@@ -63,7 +64,7 @@ schiarirsi-la-voce 1   finta-rivelazione 1
        esperti concordano: la chiave è partire dal lavoro vero.
 ```
 
-Novanta parole, undici formule e due epanortosi. Fa ridere, ma quel paragrafo lo
+Novanta parole. Undici formule. Due epanortosi. Fa ridere, e quel paragrafo lo
 trovi su un sito vero su tre.
 
 `ind` è l'indice contro la base umana del genere, `sup` le altre superfici della
@@ -75,16 +76,16 @@ dipendenze.
 
 ### Confrontare un prima e un dopo
 
-Un numero da solo dice poco. Con un prima e un dopo dice se la revisione ha
-tolto o ha aggiunto, ed è l'unica domanda a cui una regex risponde bene:
+Un numero da solo dice poco. Con un prima e un dopo ti dice se la revisione ha
+tolto o ha aggiunto. È l'unica domanda a cui una regex risponde bene.
 
 ```bash
 python3 sbobba.py --confronta bozza.md rivisto.md
 python3 sbobba.py --confronta sito-vecchio/ sito-nuovo/
 ```
 
-Esce con 1 se una pagina ha **più** sbobba di prima. Succede: correggendo un
-difetto se ne scrive uno nuovo, e capita più spesso di quanto sembri.
+Esce con 1 se una pagina ha **più** sbobba di prima. Succede davvero. Correggendo
+un difetto se ne scrive uno nuovo, e capita più spesso di quanto sembri.
 
 ### Dentro a un controllo automatico
 
@@ -92,8 +93,8 @@ difetto se ne scrive uno nuovo, e capita più spesso di quanto sembri.
 python3 sbobba.py --max-formule 3 --max-indice 1.5 testi/
 ```
 
-Esce con 1 se un file supera le soglie, così puoi fermare una pubblicazione.
-Su GitHub c'è anche l'azione già pronta:
+Esce con 1 se un file supera le soglie. Così puoi fermare una pubblicazione.
+Su GitHub c'è l'azione già pronta:
 
 ```yaml
 - uses: TheRealF/niente-sbobba@main
@@ -119,15 +120,16 @@ qualunque strumento.
 Con pesi e misure, che ho preso dal mio paper
 **[Artificial Epanorthosis](https://arxiv.org/abs/2607.21498)**.
 
-La sbobba ha una figura sua, che riconosci a colpo d'occhio: l'epanortosi, cioè
-«non è un corso, è un percorso». Nel paper l'ho misurata per genere, e i modelli
-la mettono al **doppio** del tasso umano in un discorso e a **un quinto** in una
-chiacchierata. Poi ho provato a spegnerla del tutto, con un adapter addestrato
-apposta, e il testo è finito **sotto** il tasso umano. Zero correzioni suona
-finto quanto il doppio.
+La sbobba ha una figura sua. Si chiama epanortosi, e la riconosci a colpo
+d'occhio: «non è un corso, è un percorso». Nel paper l'ho misurata per genere.
+I modelli la mettono al **doppio** del tasso umano in un discorso. In una
+chiacchierata scendono a **un quinto**.
 
-Quindi non te la tolgo tutta. Te la riporto al tasso di chi scrive quel genere, e
-questi sono i numeri che uso.
+Poi ho provato a spegnerla del tutto, con un adapter addestrato apposta. Il testo
+è finito **sotto** il tasso umano. Zero correzioni suona finto quanto il doppio.
+
+Quindi non te la tolgo tutta. Te la riporto al tasso di chi scrive quel genere.
+Questi sono i numeri che uso.
 
 | Genere | Umani | Modelli | Indice |
 | --- | --- | --- | --- |
@@ -138,15 +140,19 @@ questi sono i numeri che uso.
 | Argomentativo (IT) | ~12 | 56,9 | **4,7×** |
 | Oratorio (IT) | ~14 | 39,6 | **2,8×** |
 
-Occorrenze ogni 10.000 parole. Per il promozionale una base umana pubblica non
-ce l'ha nessuno, e lo strumento te lo dice invece di inventarsela.
+Occorrenze ogni 10.000 parole. Per il promozionale una base umana non ce l'ha
+nessuno. Lo strumento te lo dice invece di inventarsela.
 
-Due cose che vengono da lì e che mi sono costate tempo. **Se vieti una forma, la
-sposti sulle altre**: Fontanier mette l'epanortosi fra le figure di *pensiero*,
-quindi togli il «non X, ma Y» e ti ricompare in «più che X, Y», «X, o meglio Y»,
-«definirlo X è riduttivo». E **sul testo umano il rilevatore sbaglia di brutto**:
-precisione 0,82 sul generato e 0,17 su quello scritto da una persona, misurata a
-mano su 206 finestre. Sul tuo testo una spia ti dice solo di andare a guardare.
+Da lì vengono due cose che mi sono costate tempo.
+
+La prima. **Se vieti una forma, la sposti sulle altre.** Fontanier mette
+l'epanortosi fra le figure di *pensiero*. Togli il «non X, ma Y» e ti ricompare
+in «più che X, Y», in «X, o meglio Y», in «definirlo X è riduttivo».
+
+La seconda. **Sul testo umano il rilevatore sbaglia di brutto.** Precisione 0,82
+sul generato, 0,17 su quello scritto da una persona. Misurata a mano su 206
+finestre. Sul tuo testo una spia ti dice solo di andare a guardare.
+
 ## Quanto ti puoi fidare del rilevatore
 
 Ho fatto scrivere dodici testi italiani a dei modelli senza dirgli cosa stavo
@@ -161,30 +167,31 @@ Io, leggendoli, ne ho trovate **quattro**:
 >
 > «Una biblioteca **non si misura** dal numero dei libri. **Si misura** da quante persone entrano.»
 
-Gli sfuggono perché il verbo è «sta» o «serve» invece di «è», perché il
-separatore sono i due punti, e perché la coppia è spezzata in due frasi. Nel
-paper l'avevo già scritto: quel canale copre la famiglia «non… ma» e ha recall
-0,52.
+Perché gli sfuggono? Il verbo è «sta» o «serve» invece di «è». Il separatore sono
+i due punti. E la coppia è spezzata in due frasi. Nel paper l'avevo già scritto.
+Quel canale copre la famiglia «non… ma», e ha recall 0,52.
 
-Poi ho dato gli stessi dodici testi alla skill, e le ha trovate tutte e quattro.
-Perché a leggerla è un modello, e un modello legge. Due le ha lasciate lì
-apposta, quelle dove la seconda parte porta un fatto nuovo.
+Poi ho dato gli stessi dodici testi alla skill. Le ha trovate tutte e quattro,
+perché a leggerla è un modello. Due le ha lasciate lì apposta, quelle dove la
+seconda parte porta un fatto nuovo.
 
 ⚠️ **Occhio allo zero.** Vuol dire che il rilevatore non ha trovato la forma che
 sa cercare, e del resto del tuo testo non sa niente.
+
 ## L'ho provata
 
     python3 test/prova_sbobba.py
 
-Sessantuno casi, che girano a ogni push: quello che il rilevatore deve prendere,
-quello che deve lasciare stare, e i buchi noti bloccati così come sono. Tre
-prima e dopo veri stanno in [`esempi/`](esempi/).
+Sessantacinque casi, e girano a ogni push. Quello che il rilevatore deve
+prendere. Quello che deve lasciare stare. E i buchi noti, bloccati così come
+sono. Tre prima e dopo veri stanno in [`esempi/`](esempi/).
 
-⚠️ Il buco più bello l'ho scoperto scrivendo quei test. «Questo non è un corso.
-È un percorso.» è lo specimen dell'abstract del mio paper, e **il pattern del mio
-paper non lo vede**: dentro c'è `questa?`, che prende il femminile e si perde il
-maschile. Lo raccoglie il secondo canale. Il primo lo lascio com'è, sennò i
+⚠️ Il buco più bello l'ho scoperto scrivendo quei test. «Questo non è un corso. È
+un percorso.» è lo specimen dell'abstract del mio paper. **Il pattern del mio
+paper non lo vede.** Dentro c'è un `questa?` che prende il femminile e si perde
+il maschile. Lo raccoglie il secondo canale. Il primo lo lascio com'è, sennò i
 numeri non sono più confrontabili con quelli che ho pubblicato.
+
 ## Cosa trova
 
 Tredici famiglie. Le prime due sono la spia italiana per eccellenza, e in
@@ -212,43 +219,49 @@ diritti fondamentali.
 
 ## Quello che non fa
 
-Se un testo l'ha scritto una AI, questa skill non te lo dice: quelli che lo
-promettono tirano a indovinare, e io preferisco nominarti la formula e citarti la
-riga, così vai a controllare te. Sull'inglese non ci provo nemmeno, perché per
-quello c'è già [no-ai-slop](https://github.com/petergyang/no-ai-slop). Refusi,
-accordi e virgole li lascia dove stanno: per quelli ti serve un correttore di
-bozze, che è un altro mestiere.
+Se un testo l'ha scritto una AI, questa skill non te lo dice. Quelli che lo
+promettono tirano a indovinare. Io preferisco nominarti la formula e citarti la
+riga, e poi controlli te.
 
-Il limite grosso però è un altro, e conviene saperlo prima di installarla. Le
-formule te le toglie. Le cose da dire ce le devi mettere te. Su un testo che non
-ha niente da dire ti restituisce un testo pulito che non ha niente da dire.
+Sull'inglese non ci provo nemmeno. Per quello c'è già
+[no-ai-slop](https://github.com/petergyang/no-ai-slop). Refusi, accordi e virgole
+li lascia dove stanno. Per quelli ti serve un correttore di bozze.
 
-La prima volta che lo lanci sul tuo testo ti segnala una frase a cui tieni.
-Capita a tutti. L'hai scritta te, e probabilmente è giusta così.
-Lo strumento trova **formule, non autori**, e su un testo scritto da una persona
+Il limite grosso però è un altro, e conviene saperlo prima. Le formule te le
+toglie. Le cose da dire ce le devi mettere te. Su un testo che non ha niente da
+dire ti restituisce un testo pulito che non ha niente da dire.
+
+Una cosa capita a tutti. La prima volta che lo lanci sul tuo testo, ti segnala
+una frase a cui tieni. L'hai scritta te, e probabilmente è giusta così. Lo
+strumento trova **formule, non autori**. Su un testo scritto da una persona
 sbaglia cinque volte su sei. Per questo ti segnala invece di correggere.
 
 ## Una cosa da fare prima di usarla
 
-⚠️ **Riempi `riferimenti/voce.md`.** Scrivici chi parla, cosa non usa mai, cosa
-usa e sembra un difetto, e le frasi che hai scritto di tuo pugno e che nessuno
-deve toccare. Senza, ti toglie le formule e ti restituisce una prosa corretta e
-di nessuno, che è il secondo modo di suonare artificiale.
+⚠️ **Riempi `riferimenti/voce.md`.** Scrivici chi parla. Cosa non usa mai. Cosa
+usa e sembra un difetto. E le frasi che hai scritto di tuo pugno, quelle che
+nessuno deve toccare.
 
-Gli altri file: `SKILL.md` ha le regole, `eval.md` i controlli che la skill fa
-sul proprio lavoro, `sbobba.py` il rilevatore, `riferimenti/epanortosi.md` la
-figura e i suoi limiti, `riferimenti/formule.md` il lessico con le eccezioni.
+Senza quel file ti toglie le formule e ti restituisce una prosa corretta e di
+nessuno. È il secondo modo di suonare artificiale.
+
+Gli altri file. `SKILL.md` ha le regole. `eval.md` i controlli che la skill fa
+sul proprio lavoro. `sbobba.py` è il rilevatore. `riferimenti/epanortosi.md`
+spiega la figura e i suoi limiti, `riferimenti/formule.md` il lessico con le
+eccezioni.
+
 ## Crediti
 
 L'idea di impacchettare tutto questo come skill viene da
-**[no-ai-slop](https://github.com/petergyang/no-ai-slop)** di Peter Yang, che fa
-la stessa cosa per l'inglese. Qui il lessico è italiano e il criterio viene dal
+**[no-ai-slop](https://github.com/petergyang/no-ai-slop)** di Peter Yang. Lui fa
+la stessa cosa per l'inglese. Qui il lessico è italiano, e il criterio viene dal
 paper.
 
-La ricerca è mia: **Federico Boggia** (aka TheRealF aka io), *Artificial
+La ricerca è mia. **Federico Boggia** (aka TheRealF aka io), *Artificial
 Epanorthosis*, arXiv:2607.21498. I pattern del canale principale li ho copiati
-verbatim dal mio script di valutazione (§7.8), così quello che misuri qui è
-quello che ho pubblicato là.
+verbatim dal mio script di valutazione. Quello che misuri qui è quello che ho
+pubblicato là.
+
 ## Licenza
 
 MIT.
