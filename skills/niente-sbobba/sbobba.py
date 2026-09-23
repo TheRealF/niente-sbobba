@@ -85,6 +85,25 @@ SUPERFICI = {
     "altro-che": r"(?:^|[.;!?]\s)Altro che\b",
     "anzi": r"(?:^|[,;] )anzi\b",
     "se-non-almeno": r"\bse non [^.;:!?\n]{2,40}?,\s*almeno\b",
+    # ⚠️ «X invece di Y» mancava, ed e' la superficie che scappa piu' spesso:
+    # non nega e non corregge, sostituisce, quindi nessuno dei pattern del
+    # paper la prende. Segnalata da Federico il 2026-09-23 dopo averla vista
+    # cinque volte in una pagina che il rilevatore dava a zero.
+    # ⚠️ E' anche italiano normalissimo («vado a piedi invece di prendere
+    # l'auto»): sta nel canale 1b, che e' un elenco di candidati da leggere.
+    # Si guarda cosa c'e' dopo «invece di». Se e' un'alternativa vera che
+    # qualcuno poteva scegliere, e' una frase; se e' la versione scadente
+    # della stessa cosa, messa li' per far brillare la prima, e' la figura.
+    "invece-di": r"\binvece (?:di|che)\b(?=[^.;:!?\n]{3,45})",
+    "piuttosto-che": r"\bpiuttosto che\b|\bpiu' che altro\b|\bpiù che altro\b",
+    "tutt-altro": r"\b(tutt'altro che|lungi da|ben lontano da|nulla a che vedere con)\b",
+    # L'ordine rovesciato: prima si afferma e poi si nega quello che si e'
+    # lasciato indietro. «E' un percorso, non un corso.» I pattern del paper
+    # guardano la negazione per prima e questa gli passa sotto.
+    "afferma-poi-nega": r"\b(?:è|e'|sono|era|resta|diventa) [^.;:!?\n]{3,40}, non (?:un|una|uno|il|lo|la|i|gli|le|solo|soltanto|proprio)\b",
+    "semmai": r"(?:^|[,;] )(semmai|se mai|caso mai)\b",
+    "a-ben-vedere": r"\b(a ben vedere|a guardare bene|a conti fatti|se ci pensi|a pensarci)\b",
+    "nel-senso-che": r"\b(nel senso che|per essere chiari|per intenderci|diciamo che)\b",
 }
 
 # --------------------------------------------------------------------------
@@ -335,6 +354,58 @@ def ritmo(t: str) -> tuple:
 
 
 # --------------------------------------------------------------------------
+# CANALE 6 — DENSITÀ: quanta roba c'è dentro.
+#
+# Viene da «Measuring AI Slop in Text» (arXiv:2509.19163), che intervista
+# redattori di mestiere e trova tre dimensioni che predicono il giudizio
+# «questo è slop» meglio di tutte: *relevance*, *density*, *tone*. La densità
+# e' la quantita' di sostanza rispetto alla lunghezza, e qui non si misurava.
+#
+# In italiano, senza librerie, la sostanza si conta dagli APPIGLI: un numero,
+# una data, una percentuale, un'unita', un nome proprio, una cifra in euro,
+# una citazione fra virgolette, un pezzo di codice. Un periodo che non ne ha
+# nessuno e' un periodo che si sposta identico su un altro sito, che e' la
+# «prova del trasloco» della skill detta con un conto.
+#
+# ⚠️ Le due misure dicono cose diverse e si leggono insieme. `app` e' quanti
+# appigli ci sono ogni 100 parole. `vuote` e' la quota di periodi che non ne
+# hanno NESSUNO, e di solito e' la piu' utile: un testo puo' avere una media
+# decente perche' due paragrafi sono pieni di numeri e tutto il resto gira a
+# vuoto.
+#
+# ⚠️ Non e' un difetto in se'. Un testo narrativo o riflessivo sta in basso ed
+# e' giusto cosi'. Serve su quello che promette di informare.
+APPIGLI = re.compile(
+    r"\d"                                  # un numero qualunque, data e percentuale comprese
+    r"|\b[A-ZÀ-Ý][a-zà-ÿ']{2,}"             # nome proprio (in mezzo alla frase: vedi sotto)
+    r"|\b[A-Z]{2,}\b"                      # sigla: SEO, IVA, GGUF
+    r"|[€$%]"
+    r"|«[^»]{2,}»|“[^”]{2,}”"  # una citazione e' roba che qualcuno ha detto
+)
+# Le unita' di misura piu' comuni, che spesso arrivano senza cifra accanto.
+UNITA = re.compile(r"\b(ms|kb|mb|gb|tb|km|cm|mm|kg|mq|min|sec|ore|euro|token|parole)\b", re.I)
+
+
+def densita(t: str) -> tuple:
+    """(appigli ogni 100 parole, quota di periodi senza nessun appiglio, periodi)."""
+    frasi = [f.strip() for f in re.split(r"(?<=[.!?])\s+", t) if len(_tok(f)) >= 4]
+    if len(frasi) < 5:
+        return None, None, len(frasi)
+    totale = vuote = parole_tot = 0
+    for f in frasi:
+        # ⚠️ La prima parola non conta come nome proprio: in italiano la
+        # maiuscola a inizio periodo ce l'ha qualunque parola, e contarla
+        # darebbe un appiglio gratis a ogni frase.
+        corpo = re.sub(r"^\W*\w+", " ", f)
+        n = len(APPIGLI.findall(corpo)) + len(UNITA.findall(f))
+        totale += n
+        vuote += (n == 0)
+        parole_tot += len(_tok(f))
+    return (round(totale * 100 / max(parole_tot, 1), 1),
+            round(vuote * 100 / len(frasi), 1), len(frasi))
+
+
+# --------------------------------------------------------------------------
 # CANALE 5 — FORMA: come è impaginato, non cosa dice.
 #
 # Gira sul SORGENTE e non sul testo estratto, perché queste spie stanno nei tag
@@ -544,6 +615,7 @@ def analizza(percorso: str, t: str, genere: str | None, src: str = "") -> dict:
     c4 = canale4(t)
     c5 = canale5(src, percorso, n, t) if src else []
     nfrasi, cv, piatto = ritmo(t)
+    app, vuote, _ = densita(t)
     dens = round(len(c1) * 10000 / n, 1)
     base, fonte = BASI.get(g, (None, ""))
     ei = round(dens / base, 2) if base else None
@@ -561,6 +633,9 @@ def analizza(percorso: str, t: str, genere: str | None, src: str = "") -> dict:
         len(c4) * 1000 / n > 1.8,
         len(c5) >= 2,
         bool(piatto),
+        # Densita': il p90 umano dei periodi senza nessun appiglio e' 78,7%.
+        # Gli esempi di sbobba stanno fra 83% e 100%.
+        bool(vuote is not None and vuote > 80.0),
     ])
     per_lente = {}
     for k, _ in c4:
@@ -576,6 +651,7 @@ def analizza(percorso: str, t: str, genere: str | None, src: str = "") -> dict:
         "per_lente": per_lente,
         "forma": len(c5), "per_forma": {k: v for k, v in c5},
         "frasi": nfrasi, "cv": cv, "ritmo_piatto": piatto,
+        "appigli_x100": app, "frasi_vuote_pct": vuote,
         "segnali": 0 if corto else segnali,
         "io": len(re.findall(IO, t, re.I)),
         "esempi_c1": c1[:12], "esempi_c1b": c1b[:12],
@@ -698,7 +774,9 @@ def taratura(cartella: str, genere: str | None) -> int:
     for nome, campo, verso in (("formule /1000", "formule_x1000", "su"),
                                ("ritmo /1000", "ritmo_x1000", "su"),
                                ("forma (conteggio)", "forma", "su"),
-                               ("cv delle frasi", "cv", "giu")):
+                               ("frasi vuote %", "frasi_vuote_pct", "su"),
+                               ("cv delle frasi", "cv", "giu"),
+                               ("appigli /100", "appigli_x100", "giu")):
         v = [r[campo] for r in ris if r[campo] is not None]
         if not v:
             continue
@@ -779,8 +857,8 @@ def main() -> int:
         return 0
 
     esiti.sort(key=lambda r: (-r["segnali"], -(r["indice"] or 0), -r["formule_x1000"]))
-    print(f"\n{'file':44}{'genere':14}{'parole':>7}{'ind':>6}{'sup':>5}"
-          f"{'form':>6}{'/1k':>6}{'rip':>5}{'/1k':>6}{'forma':>6}{'cv':>6}{'io':>4}  ")
+    print(f"\n{'file':40}{'genere':13}{'parole':>7}{'ind':>6}{'sup':>5}"
+          f"{'form/1k':>8}{'rip/1k':>7}{'forma':>6}{'cv':>6}{'app':>6}{'vuote':>7}{'io':>4}  ")
     for r in esiti:
         if a.soglia and (r["indice"] or 0) < a.soglia and r["formule_x1000"] < a.soglia:
             continue
@@ -789,9 +867,11 @@ def main() -> int:
         # Il bollino non lo dà un canale solo: ⚠ da tre segnali in su.
         seg = "corto" if r["corto"] else ("⚠ " + "•" * r["segnali"] if r["segnali"] >= 3
                                           else "•" * r["segnali"])
-        print(f"{r['file'][-44:]:44}{r['genere']:14}{r['parole']:7}{ind:>6}{r['superfici']:5}"
-              f"{r['formule']:6}{r['formule_x1000']:6}{r['ritmo']:5}{r['ritmo_x1000']:6}"
-              f"{r['forma']:6}{cv:>6}{r['io']:4}  {seg}")
+        app = "—" if r["appigli_x100"] is None else f"{r['appigli_x100']:.1f}"
+        vuo = "—" if r["frasi_vuote_pct"] is None else f"{r['frasi_vuote_pct']:.0f}%"
+        print(f"{r['file'][-40:]:40}{r['genere']:13}{r['parole']:7}{ind:>6}{r['superfici']:5}"
+              f"{r['formule_x1000']:8}{r['ritmo_x1000']:7}"
+              f"{r['forma']:6}{cv:>6}{app:>6}{vuo:>7}{r['io']:4}  {seg}")
 
     tot = {}
     for r in esiti:
@@ -823,7 +903,12 @@ def main() -> int:
     print("      emoji e Title Case nei titoli, virgolette curve, righe di stacco.")
     print("cv = quanto variano le frasi. Sotto 0,42 il ritmo è piatto; il testo umano")
     print("      di riferimento sta sopra (vedi --taratura).")
-    print("⚠ = tre canali su cinque sopra soglia. Un canale solo non fa un verdetto.")
+    print("app = canale 6, densità: appigli ogni 100 parole (numeri, date, nomi propri,")
+    print("      sigle, unità, citazioni). vuote = quota di periodi che non ne hanno")
+    print("      NESSUNO, cioè che si spostano identici su un altro sito. Umano: app")
+    print("      fra 6 e 10, vuote fra 49% e 66%. Gli esempi di sbobba: app sotto 4,")
+    print("      vuote sopra l'83%.")
+    print("⚠ = tre canali su sei sopra soglia. Un canale solo non fa un verdetto.")
     if saltati:
         print(f"⚠️ saltati (né <article> né corpo fra </nav> e <footer>): {len(saltati)}")
         for f in saltati[:8]:

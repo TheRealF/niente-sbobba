@@ -54,6 +54,37 @@ la parte esposta. Le altre superfici, tutte della stessa figura:
 - «se non X, almeno Y», nella variante che attenua
 - «diciamo X. Anzi, Y»
 
+Aggiunte il 2026-09-23, dopo che Federico ha fatto notare che le usavo io a
+raffica su pagine che il rilevatore dava a zero:
+
+- **«X invece di Y»**, e la gemella «X invece che Y»
+- «piuttosto che X, Y» e «più che altro»
+- «tutt'altro che X», «lungi da X», «nulla a che vedere con X»
+- **«È Y, non X»**, cioè la coppia in ordine rovesciato: prima si afferma e poi
+  si nega quello che si è lasciato indietro. I pattern del paper partono dalla
+  negazione, quindi questa gli passa sotto tutta intera
+- «semmai», «caso mai»
+- «a ben vedere», «a conti fatti», «a pensarci»
+- «nel senso che», «per intenderci», «diciamo che»
+
+### «Invece di» è quella che scappa di più, e la più rumorosa
+
+Non nega e non corregge: **sostituisce**, quindi nessun pattern che cerca una
+negazione la vede. È anche la più frequente in italiano corrente, e il conto lo
+dice: sui 139 manoscritti (351.411 parole) scatta **198 volte, 5,6 ogni 10.000
+parole**, che è il tasso di falsi allarmi più alto di tutte le superfici.
+
+Sta nel canale 1b e ci resta, perché il canale 1b è un elenco di candidati da
+leggere. La prova per distinguere:
+
+> Guarda cosa c'è **dopo** «invece di». Se è un'alternativa vera, che qualcuno
+> avrebbe potuto scegliere, è una frase e si lascia stare. Se è la versione
+> scadente della stessa cosa, messa lì perché la prima brilli, è la figura.
+
+«Nove domande invece di duecento» è un confronto, e porta un fatto. «È diventato
+il filo del discorso invece di un aneddoto» è la figura: nessuno aveva proposto
+l'aneddoto, l'ho tirato in ballo io per avere qualcosa da battere.
+
 Conseguenza pratica: chi vieta una forma sola ottiene una redistribuzione sulle
 altre. Il paper lo verifica, e l'istruzione che funziona nomina **densità e
 registro**, non la stringa: «al massimo una correzione enfatica in tutto il
@@ -143,20 +174,17 @@ correggerli qui scollegherebbe la misura da quella pubblicata. Si coprono nel
 secondo canale, che serve a questo. Stanno bloccati in `test/prova_sbobba.py`,
 così se un giorno cambiano ce ne accorgiamo.
 
-## Falsi positivi da conoscere
+## Falsi positivi già noti
 
 Non si «correggono»:
 
-- **I testi che parlano della figura.** Un articolo, un paper o una guida che
-  cita gli esempi ha per forza una densità alta: gli esempi sono l'oggetto del
-  discorso. Anche questa skill esce con l'indice sopra 3.
-- **Le citazioni.** La frase di un altro resta com'è, anche quando contiene la
-  figura. Si corregge la parafrasi intorno, mai la citazione.
-- **Il lessico tecnico.** «Rappresentare» quando un vettore rappresenta una
-  parola o un grafico rappresenta dei dati; «rappresentatività» nella
-  linguistica dei corpora; «differenza significativa» quando dietro c'è una
-  statistica; «diritti fondamentali» in un testo giuridico; «chiave» quando è
-  una chiave di cifratura o di un servizio.
-- **Le antitesi vere.** «Produce traffico ma non conversioni» dice due fatti che
-  convivono, e non è una correzione al rialzo. È esattamente il caso in cui il
-  rilevatore vale 0,17.
+- **I testi che parlano della figura.** L'articolo
+  `pubblicazioni/epanortosi-artificiale.html`, il paper e i suoi mirror, le
+  slide, e questa skill: gli esempi citati sono l'oggetto del discorso. L'articolo
+  segna indice 2,10 apposta, e la sua chiusa («è che noi cominciamo a scrivere
+  come loro») è voluta.
+- **`academy/corsi-fonte/costruisci-un-corpus.md`**: «rappresentatività» è il
+  termine tecnico della linguistica dei corpora, e «la chiave sta in una
+  variabile d'ambiente» parla di una chiave API.
+- **«rappresentare» quando è tecnico**: un vettore rappresenta una parola, un
+  grafico rappresenta dei dati. Si tocca solo quando sostituisce «essere».

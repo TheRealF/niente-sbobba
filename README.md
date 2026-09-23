@@ -47,8 +47,9 @@ Nel repo c'è un file di prova per capire come usarlo
 ```
 $ python3 skills/niente-sbobba/sbobba.py --frasi esempi/sbobba.txt
 
-file              genere        parole  ind  sup  form   /1k  rip  /1k forma  cv  io
-esempi/sbobba.txt promozionale      90    —    1    11 122.2    0  0.0     0   —   0  corto
+file                                    genere        parole   ind  sup form/1k rip/1k forma    cv   app  vuote  io
+esempi/sbobba.txt                       promozionale      90     —    1   122.2    0.0     0     —   3.7    88%   0  corto
+## esempi/sbobba.txt  [promozionale]
 
 --- formule per tipo ---
 riempitivi 1   svuotaverbi 1   permette-di 1   la-chiave 1   mondo-oggi 1
@@ -70,8 +71,8 @@ fisse, i tre aggettivi in fila, la catena negata e le frasi tutte lunghe uguale.
 ```
 $ python3 skills/niente-sbobba/sbobba.py --frasi esempi/sbobba-ritmo.txt
 
-file                                        genere         parole   ind  sup  form   /1k  rip   /1k forma    cv  io  
-esempi/sbobba-ritmo.txt                     promozionale      180     —    1    13  72.2    9  50.0     0  0.32   0  ⚠ •••
+file                                    genere        parole   ind  sup form/1k rip/1k forma    cv   app  vuote  io  
+esempi/sbobba-ritmo.txt                 promozionale     180     —    1    72.2   50.0     0  0.32   1.2    83%   0  ⚠ ••••
 ## esempi/sbobba-ritmo.txt  [promozionale]
 
   rip  [tricolon-secco] misurabili, verificabili e sostenibili
@@ -88,7 +89,8 @@ esempi/sbobba-ritmo.txt                     promozionale      180     —    1  
 
 `ind` è l'indice calcolato rispetto alla baseline umana per genere, `sup` le altre
 superfici della figura, `form` le formule, `rip` il ritmo, `forma` l'impaginazione,
-`cv` quanto variano le lunghezze delle frasi, `io` i segni della prima persona.
+`cv` quanto variano le lunghezze delle frasi, `app` e `vuote` la densità, `io` i
+segni della prima persona.
 **Se `io` ti esce zero, il tuo testo parla come un manuale, può essere positivo o
 negativo, chiaramente dipende dai casi d'uso**. `corto` vuol dire che sotto le 120
 parole il verdetto si sospende: su novanta parole una densità non vuol dire niente.
@@ -150,9 +152,40 @@ nel disegno delle frasi. Quindi qui i canali sono cinque.
 | 3 — **prima persona** | quante volte l'autore c'è. A zero il testo è un manuale |
 | 4 — **ritmo** | echi, attacchi uguali, tricolon secchi, catene negate, ridondanze, sinonimia forzata, frasi tutte lunghe uguale |
 | 5 — **forma** | grassetto sparso, elenchi a etichetta, elenchi tutti uguali, Title Case, emoji nei titoli, virgolette curve |
+| 6 — **densità** | quanto dice, invece di come lo dice: numeri, date, nomi, sigle, unità, citazioni |
 
-Sì: **i trattini lunghi li toglie** (canale 2), e da adesso prende anche **le
-ripetizioni e le elencazioni** (canale 4), che prima gli sfuggivano.
+Sì: **i trattini lunghi li toglie** (canale 2), prende **ripetizioni ed
+elencazioni** (canale 4), e dal canale 6 sa anche dire quando un testo è pulito
+e vuoto.
+
+### Il canale 6: un testo può essere pulito e vuoto
+
+Gli altri cinque guardano **come** è scritto un testo. Questo guarda **quanto
+dice**: conta gli *appigli*, cioè numeri, date, percentuali, unità, nomi propri,
+sigle, citazioni. Roba che qualcuno ha dovuto sapere per scriverla. Un periodo
+che non ne ha nessuno è un periodo che si sposta identico sul sito di un altro.
+
+| corpus | appigli / 100 parole | periodi senza appigli |
+| --- | --- | --- |
+| I miei manoscritti (136 file) | mediana **8,0** | mediana **60%** |
+| La wiki del mio sito (89 pagine) | mediana **9,5** | mediana **49%** |
+| Gli esempi di sbobba qui nella repo | **0,0 – 3,7** | **83% – 100%** |
+
+Il canale l'ho aggiunto dopo aver letto
+[*Measuring AI Slop in Text*](https://arxiv.org/abs/2509.19163), che fa annotare
+a tre copy-editor 250 testi span per span e trova che fra le sette dimensioni del
+loro schema la **densità** è uno dei tre predittori più forti del giudizio
+«questo è slop». Il mio strumento non la misurava.
+
+⚠️ E la prima cosa che ha trovato è un buco mio. Negli esempi qui nella repo,
+`prima-argomentativo-3.txt` e `dopo-argomentativo-3.txt` sono la stessa pagina
+prima e dopo una revisione: formule a zero, epanortosi a zero, ritmo migliorato.
+Appigli **0,0 prima e 0,0 dopo**, periodi vuoti **100% e 100%**. La revisione ha
+tolto il modo di dire e ha lasciato il niente, e nessuno degli altri cinque
+canali se ne è accorto, perché misurano tutti la forma.
+
+⚠️ Densità bassa non è un difetto in sé: un testo narrativo o riflessivo sta in
+basso e fa bene. Serve su quello che promette di informare.
 
 ### Due cose che ho dovuto capovolgere passando all'italiano
 
@@ -161,8 +194,8 @@ ripetere la stessa parola, e i linter anti-slop segnalano chi gira i sinonimi. I
 italiano la scuola insegna l'opposto, la *variatio*, e chi scrive «corso» cinque
 volte di fila scrive bene lo stesso. Quindi qui un sostantivo ripetuto **non** si
 segnala. Si segnala il contrario: la stessa cosa chiamata in quattro modi in
-poche righe — «il percorso… il cammino… il viaggio… l'iter» — che è la forma che
-la ripetizione prende in italiano, mascherata da eleganza.
+poche righe, «il percorso… il cammino… il viaggio… l'iter», che è la forma che la
+ripetizione prende in italiano, mascherata da eleganza.
 
 **Il tricolon non è un difetto.** Tre membri che portano tre fatti diversi è
 retorica buona e sta in Cicerone. La prima versione, che segnalava qualunque
@@ -179,7 +212,7 @@ tutti e tre. Da 249 a 22.
 python3 sbobba.py --taratura miei-testi/
 ```
 
-Prende un corpus di roba scritta a mano — la tua — e stampa, per ogni lente,
+Prende un corpus di roba scritta a mano, la tua, e stampa per ogni lente
 **quanto scatta su testo umano**. Quella colonna è il tasso di falsi allarmi
 della lente, e si legge come la precisione 0,17 qui sotto: una lente rumorosa dà
 candidati da leggere, non errori da correggere. Le soglie di serie stanno al 90°
@@ -192,6 +225,28 @@ avevo messo a occhio segnalava due terzi dei capitoli che avevo scritto io.
 
 E c'è un **cancello di corroborazione**: il `⚠` compare solo quando tre canali su
 cinque stanno sopra soglia. Una spia sola non fa un verdetto.
+
+### «Invece di», cioè la superficie che scappa a tutti
+
+Me l'ha fatta notare un lettore, e aveva ragione: la usavo io a raffica su
+pagine che il mio stesso rilevatore dava a zero. «X invece di Y» **non nega e non
+corregge, sostituisce**, quindi nessun pattern che cerca una negazione la vede.
+Insieme sono entrate «piuttosto che», «tutt'altro che», «semmai», «a ben vedere»
+e soprattutto **«È Y, non X»**, la coppia in ordine rovesciato, che i pattern del
+paper mancano tutta intera perché partono dalla negazione.
+
+⚠️ «Invece di» è anche italiano normalissimo, e il conto lo dice: sui miei
+manoscritti scatta **198 volte, 5,6 ogni 10.000 parole**, il tasso di falsi
+allarmi più alto di tutte le superfici. Sta nel canale 1b, che è un elenco di
+candidati da leggere, e la prova per distinguere è questa:
+
+> Guarda cosa c'è **dopo** «invece di». Se è un'alternativa vera, che qualcuno
+> avrebbe potuto scegliere, è una frase. Se è la versione scadente della stessa
+> cosa, messa lì perché la prima brilli, è la figura.
+
+«Nove domande invece di duecento» è un confronto, e porta un fatto. «È diventato
+il filo del discorso invece di un aneddoto» è la figura: nessuno aveva proposto
+l'aneddoto, l'ho tirato in ballo io per avere qualcosa da battere.
 
 ### Da dove ho preso le idee
 
@@ -206,6 +261,16 @@ parole, il cancello di corroborazione, i profili per genere, la pubblicazione de
 falsi positivi per regola) e [no-slop](https://github.com/Byk3y/no-slop) (le
 *structural formulas*). Quello che ho aggiunto è la taratura sull'italiano e le
 due inversioni qui sopra.
+
+Il canale 6 viene da [*Measuring AI Slop in Text*](https://arxiv.org/abs/2509.19163).
+Su come si costruiscono le liste il riferimento è
+[slop-forensics](https://github.com/sam-paech/slop-forensics) di Sam Paech, che
+le ricava **misurando** quali parole, bigrammi e trigrammi sono
+sovra-rappresentati nell'output dei modelli rispetto alla scrittura umana, invece
+di scriverle a mano. ⚠️ Le mie liste sono ancora scritte a mano, e questo è il
+limite grosso che resta: un elenco di parole italiane costruito per misura non
+esiste, e finché non esiste qualunque lista è il gusto di chi l'ha compilata.
+Le soglie dei canali 4, 5 e 6 invece sono misurate.
 
 ## Come decido quanto togliere
 

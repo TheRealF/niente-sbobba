@@ -299,9 +299,61 @@ prova("elenco con voci tutte uguali scatta",
 r = sb.analizza("x.md", "Testo cortissimo e fondamentale.", "argomentativo", "")
 prova("astensione: sotto 120 parole il verdetto si sospende", r["corto"] and r["segnali"] == 0)
 
+# ------------------------------------------------- superfici aggiunte dopo
+
+def superfici(x):
+    return {k for k, _ in sb.canale1b(x)}
+
+
+prova("«invece di» e una superficie dell'epanortosi, e mancava",
+      "invece-di" in superfici("Legge la risposta invece di generarla."))
+prova("«invece di» scatta anche sull'uso normale: e un candidato, non un errore",
+      "invece-di" in superfici("Vado a piedi invece di prendere l'auto."))
+prova("l'ordine rovesciato, affermo e poi nego",
+      "afferma-poi-nega" in superfici("E un percorso, non un corso.".replace("E ", "\u00c8 ")))
+prova("una distinzione vera non scatta",
+      "afferma-poi-nega" not in superfici("\u00c8 un corso di Excel, non di Word."))
+prova("un fatto qualunque non scatta",
+      superfici("Ho comprato il pane, non il latte.") == set())
+prova("piuttosto che", "piuttosto-che" in superfici("Piuttosto che aspettare, ho scritto."))
+prova("tutt'altro che", "tutt-altro" in superfici("Il risultato \u00e8 tutt'altro che scontato."))
+
+# ------------------------------------------------------------- densita'
+
+def dens(x):
+    return sb.densita(x)
+
+
+_PIENO = ("Il deploy \u00e8 passato da 40 minuti a 4. La revisione la fa Marta il gioved\u00ec. "
+          "Il file pesa 2,5 GB e sta su GitHub. Costa 890 euro, in tre rate. "
+          "A Livorno il corso parte il 6 ottobre. Le prove sono 85 e girano in 0,2 s.")
+_VUOTO = ("La soluzione rappresenta una svolta importante per il settore. "
+          "Permette di ottimizzare i processi in modo efficace. "
+          "Il valore aggiunto si vede fin da subito. "
+          "L'approccio garantisce risultati concreti nel tempo. "
+          "La qualit\u00e0 resta sempre al centro del lavoro. "
+          "Ogni fase viene curata con grande attenzione.")
+
+app_pieno, vuote_pieno, _ = dens(_PIENO)
+app_vuoto, vuote_vuoto, _ = dens(_VUOTO)
+prova("densita: il testo con numeri e nomi ha piu' appigli", app_pieno > app_vuoto)
+prova("densita: il testo che gira a vuoto ha quasi tutti i periodi senza appigli",
+      vuote_vuoto >= 80 and vuote_pieno <= 40)
+prova("densita: sotto cinque periodi non si giudica", dens("Una frase. Due.")[0] is None)
+prova("densita: la maiuscola a inizio periodo non vale come appiglio",
+      dens("Questo testo gira a vuoto in ogni sua parte. "
+           "Quello che conta resta sempre lo stesso. "
+           "Ogni parola qui dentro non dice niente. "
+           "Niente numeri e niente nomi in queste righe. "
+           "Sempre la stessa aria fritta per tutti. "
+           "Alla fine non resta proprio nulla.")[1] == 100.0)
+prova("densita: entra nel conto dei segnali",
+      sb.analizza("x.md", _VUOTO * 3, "argomentativo", "")["segnali"] >= 1)
+
 # ---------------------------------------------------------------------------
 falliti = [n for n, ok in esiti if not ok]
 print(f"\n{len(esiti) - len(falliti)}/{len(esiti)} casi a posto")
 for n in falliti:
     print(f"  FALLITO  {n}")
 sys.exit(1 if falliti else 0)
+

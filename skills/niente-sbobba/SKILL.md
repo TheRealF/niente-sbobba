@@ -39,7 +39,18 @@ capovolte: in italiano un sostantivo ripetuto **non** è un difetto (la variatio
 è quello che insegna la scuola), e un tricolon **non** è un difetto finché i tre
 membri portano tre fatti diversi.
 
-**4. Il rilevatore sbaglia sul testo umano, ed è misurato.** Contro 206 finestre
+**4. Un testo può essere pulito e vuoto.** Gli altri canali guardano *come* è
+scritto. Il **canale 6** (`app`, `vuote`) guarda *quanto dice*: conta gli
+appigli, cioè numeri, date, nomi propri, sigle, unità, citazioni. Un periodo
+che non ne ha nessuno è un periodo che si sposta identico sul sito di un altro.
+Viene da *Measuring AI Slop in Text* (arXiv:2509.19163), dove la densità è uno
+dei tre predittori più forti del giudizio «questo è slop». ⚠️ Negli esempi di
+questa skill una revisione porta le formule a zero e lascia la densità a **0,0
+appigli e 100% di periodi vuoti prima e dopo**: gli altri cinque canali non se
+ne accorgono, perché misurano tutti la forma. Le regole stanno in
+`riferimenti/densita.md`.
+
+**5. Il rilevatore sbaglia sul testo umano, ed è misurato.** Contro 206 finestre
 annotate a mano la precisione è **0,82 sul testo generato e 0,17 su quello
 umano**: le persone usano gli stessi marcatori per un contrasto qualsiasi. Da qui
 la regola operativa: su un testo scritto da una persona una spia è un indizio da
@@ -78,12 +89,13 @@ una prova che si può controllare. Alla fine offri la revisione.
    la base umana del suo genere. `sup` sono le altre superfici della figura, da
    leggere. `form` sono le formule lessicali. `rip` è il ritmo (echi, attacchi
    uguali, tricolon secchi, catene negate, ridondanze, sinonimia forzata).
-   `forma` è l'impaginazione (grassetto sparso, elenchi a etichetta, Title Case,
-   emoji nei titoli). `cv` dice quanto variano le frasi: sotto 0,42 il ritmo è
-   piatto, il testo umano di riferimento sta a 0,58. `io` conta i segni della
+   `forma` è l'impaginazione. `cv` dice quanto variano le frasi: sotto 0,42 il
+   ritmo è piatto, il testo umano di riferimento sta a 0,58. `app` sono gli
+   appigli ogni 100 parole (numeri, date, nomi propri, sigle, unità, citazioni)
+   e `vuote` la quota di periodi che non ne hanno nessuno. `io` conta i segni della
    prima persona: a zero, il testo parla come un manuale.
 
-   ⚠️ **Il `⚠` in fondo alla riga vuole tre canali su cinque sopra soglia**, e
+   ⚠️ **Il `⚠` in fondo alla riga vuole tre canali su sei sopra soglia**, e
    un canale solo non fa un verdetto. Sotto le 120 parole la riga dice `corto` e
    il verdetto si sospende: su sessanta parole una densità non vuol dire niente.
 
@@ -156,10 +168,18 @@ una prova che si può controllare. Alla fine offri la revisione.
   servono due nomi è perché sono due cose, e allora si dice la differenza.
 - **Se sono voci di un elenco, scrivile come elenco.** Tre frasi di fila con lo
   stesso attacco sono un elenco che finge di essere prosa.
+- **Guarda cosa c'è dopo «invece di».** Se è un'alternativa vera, che qualcuno
+  avrebbe potuto scegliere, è una frase e si lascia stare. Se è la versione
+  scadente della stessa cosa, messa lì perché la prima brilli, è epanortosi e
+  si taglia. Stessa prova per «piuttosto che» e «tutt'altro che».
+- **Un periodo senza appigli o ne guadagna uno o esce.** Ci si mette un numero,
+  un nome, una data, un meccanismo o un caso. Se per quel periodo non si trova
+  nessuna delle cinque cose, probabilmente quel periodo non serviva.
 
 Il lessico da tagliare, con le eccezioni, sta in `riferimenti/formule.md`.
 Le forme dell'epanortosi e i tassi per genere in `riferimenti/epanortosi.md`.
 Ripetizioni, elencazioni, ritmo e impaginazione in `riferimenti/ritmo.md`.
+La densità, e come si alza, in `riferimenti/densita.md`.
 La voce di Federico e i testi intoccabili in `riferimenti/voce.md`.
 
 ## Le formule, in breve
