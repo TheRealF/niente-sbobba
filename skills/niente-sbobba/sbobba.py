@@ -7,10 +7,10 @@ gusti.
 
   canale 1  EPANORTOSI ENFATICA, la correzione al rialzo («non X, ma Y»).
             I pattern sono copiati VERBATIM da
-            artificial-epanorthosis-eval.py, §7.8 del paper di Federico Boggia
-            (arXiv:2607.21498), così la misura qui coincide con la definizione
-            operativa di quella ricerca invece di essere una stima fatta a
-            occhio. La densità è per 10.000 parole, come nel paper,
+            pubblicazioni/artificial-epanorthosis-eval.py (§7.8 del paper di
+            Federico Boggia, arXiv:2607.21498), così la misura qui coincide con
+            la definizione operativa della sua ricerca invece di essere una
+            stima fatta a occhio. La densità è per 10.000 parole, come nel paper,
             e si legge contro la base umana del genere: è l'Indice di epanortosi.
             ⚠️ Validato: micro P=0,45 R=0,52 su 206 finestre annotate a mano
             (Appendice B). La precisione si spacca per origine: 0,82 sul testo
@@ -28,6 +28,7 @@ gusti.
   canale 2  LE FORMULE, cioè il lessico che fa suonare generato un testo
             italiano: i riempitivi, «rappresenta», «permette di», «Ecco»,
             il gerundio di commento, l'attribuzione vaga, i trattini lunghi.
+            Superset della lista di _strumenti/spie-ai.py.
 
   canale 3  LA PRIMA PERSONA: quante volte l'autore c'è. A zero, il testo parla
             come un manuale generato. Non è un difetto da togliere, è una cosa
@@ -35,10 +36,10 @@ gusti.
 
 Uso
 ---
-    sbobba.py articolo.html                   # un file
-    sbobba.py testi/ articoli/                # cartelle
-    sbobba.py --frasi testi/                  # stampa le righe da rivedere
-    sbobba.py --json testi/                   # per un altro programma
+    sbobba.py wiki/seo/cos-e-seo.html         # un file
+    sbobba.py wiki pubblicazioni              # cartelle
+    sbobba.py --frasi wiki/ai                 # stampa le righe da rivedere
+    sbobba.py --json wiki                     # per un altro programma
     cat bozza.txt | sbobba.py -               # dallo standard input
     sbobba.py --genere oratorio discorso.md   # forza il genere
 
@@ -68,8 +69,8 @@ IDIT = re.compile(r"non solo|non appena|non che\b", re.I)
 
 # --------------------------------------------------------------------------
 # CANALE 1b — le due lenti aggiunte per il testo scritto a mano
-# più le superfici elencate nel §02 dell'articolo divulgativo che accompagna
-# il paper. Il paper dice che il «non… ma» è la parte esposta
+# (_libri/strumenti/epanortosi.py) più le superfici elencate nel §02
+# dell'articolo divulgativo. Il paper dice che il «non… ma» è la parte esposta
 # del fenomeno: questo canale guarda il resto.
 # --------------------------------------------------------------------------
 NEG_INTERNA = re.compile(r"\b(non (?:è|e'|sono|era|vuol dire|significa|si tratta di|serve|sta ))", re.I)
@@ -87,8 +88,8 @@ SUPERFICI = {
 }
 
 # --------------------------------------------------------------------------
-# CANALE 2 — le formule. Ogni voce ha la sua riga di cura in
-# riferimenti/formule.md.
+# CANALE 2 — le formule. Superset della lista di _strumenti/spie-ai.py.
+# Ogni voce ha la sua riga di cura in riferimenti/formule.md.
 # --------------------------------------------------------------------------
 FORMULE = {
     "riempitivi": r"\b(fondamental\w+|crucial\w+|essenzial\w+|prezios\w+|decisiv\w+"
@@ -149,6 +150,266 @@ IO = (r"\b(in aula|nei miei corsi|ai (?:miei )?corsi|ai miei studenti|secondo me
       r"|me lo chiedono|io (?:faccio|uso|scrivo|lo dico)|te lo dico|l'ho provato)\b")
 
 # --------------------------------------------------------------------------
+# CANALE 4 — RITMO: ripetizione ed elencazione.
+#
+# Perché serve un canale a parte. I canali 1 e 2 guardano PAROLE: una stringa
+# c'è o non c'è. Questo guarda la FORMA di un paragrafo, che è dove un testo
+# generato si riconosce anche quando ha il lessico pulito. Le lenti vengono
+# dallo stato dell'arte inglese (sloplint: `phrase-echo`, `rule-of-three`,
+# `no-x-no-y`, `cadence`; slopscore: le dimensioni «redundancy» e «cadence»;
+# no-slop: le «structural formulas» di WP:AISIGNS) e sono ritarate sull'italiano.
+#
+# ⚠️ DUE COSE CAMBIANO PASSANDO ALL'ITALIANO, e non sono dettagli.
+#
+#   1. «Elegant variation» va CAPOVOLTA. In inglese lo stile chiede di ripetere
+#      la stessa parola, e chi la cambia a ogni riga fa un errore: per questo
+#      no-slop la segnala. In italiano la scuola insegna l'esatto contrario, la
+#      variatio, e chi ripete «corso» cinque volte scrive bene lo stesso. Quindi
+#      qui NON si segnala un sostantivo ripetuto: si segnala il contrario,
+#      cioè la `sinonimia`, la stessa cosa chiamata in quattro modi diversi in
+#      poche righe («il percorso… il cammino… il viaggio… l'iter»), che è la
+#      forma che la sbobba prende in italiano.
+#   2. Il TRICOLON non è un difetto per definizione. Tre membri che portano
+#      ciascuno un fatto diverso è retorica buona e sta in Cicerone. Quello che
+#      si segnala è il tricolon SECCO, tre parole sole in fila senza contenuto
+#      («veloce, affidabile e sicuro»), che è la forma da copy SEO.
+#
+# ⚠️ Le soglie NON sono importate dall'inglese: sono misurate sui manoscritti
+# di Federico in `_libri/*/manoscritto/`, che è il corpus umano di questo
+# progetto, con `sbobba.py --taratura _libri`. Stessa logica del canale 1, dove
+# la base viene dal paper invece che da un'opinione.
+# --------------------------------------------------------------------------
+STOP = set("""il lo la i gli le un uno una di a da in con su per tra fra del dello della dei
+degli delle al allo alla ai agli alle dal dallo dalla dai dagli dalle nel nello nella nei negli
+nelle col coi sul sullo sulla sui sugli sulle e ed o od ma se che chi cui non come dove quando
+perche perché più meno molto poco tanto quanto è sono era erano sia siano essere stato stata
+stati state ha hanno aveva avevano avere ho hai abbiamo avete si ci vi ne mi ti loro questo
+questa questi queste quello quella quelli quelle anche ancora già poi solo sempre mai qui qua
+ogni tutti tutto tutta tutte alcuni altri altro altra altre stesso stessa suo sua suoi sue mio
+mia miei mie tuo tua tuoi tue nostro nostra vostro quindi però invece cioè cosa fare fa fatto
+può puoi posso devi deve dei una del della""".split())
+
+# Le coppie fisse: due aggettivi saldati che viaggiano insieme e non aggiungono
+# niente l'uno all'altro. Elenco curato e italiano, invece di una regex
+# «aggettivo e aggettivo» che prenderebbe mezza lingua.
+# ⚠️ Sempre `ed?`: davanti a vocale l'italiano scrive «ed», e «rapido ed
+# efficace» è proprio la forma che si vuole prendere.
+COPPIE = (r"\b(semplice ed? (?:intuitiv|immediat|veloc|chiar)\w+|chiar[oa] ed? (?:diret|sempli|conci)\w+"
+          r"|rapid[oa] ed? (?:efficac|sicur|semplic)\w+|efficace ed? efficient\w*"
+          r"|completo ed? (?:esaustiv|dettagliat)\w+|pratico ed? (?:concret|immediat|utile)\w*"
+          r"|solido ed? affidabil\w*|moderno ed? (?:innovativ|accattivant)\w+"
+          r"|flessibile ed? scalabil\w*|sicuro ed? affidabil\w*|utile ed? interessant\w*)\b")
+
+# Gli insiemi di sinonimi che i modelli girano per non ripetersi. Quando in
+# poche righe compaiono tre nomi diversi per la stessa cosa, il testo sta
+# mascherando la ripetizione invece di dire la cosa.
+SINONIMI = {
+    "percorso": ("percorso", "cammino", "viaggio", "iter", "tragitto"),
+    "strumento": ("strumento", "soluzione", "risorsa", "tool", "dispositivo"),
+    "mondo": ("mondo", "panorama", "scenario", "universo", "ecosistema", "landscape"),
+    "capacità": ("capacità", "abilità", "competenza", "skill", "attitudine"),
+    "crescita": ("crescita", "evoluzione", "sviluppo", "progressione", "ascesa"),
+    "metodo": ("metodo", "approccio", "metodologia", "modalità", "paradigma"),
+    "sfida": ("sfida", "ostacolo", "difficoltà", "criticità", "problematica"),
+}
+
+RE_TRICOLON = re.compile(
+    r"(?<![,;:])\b([a-zà-ù]{4,15}), ([a-zà-ù]{4,15}) e(?:d)? ([a-zà-ù]{4,15})\b(?![ ]*[a-zà-ù]{3,})")
+
+# ⚠️ IL PUNTO PIÙ ITALIANO DI TUTTO IL CANALE 4. Tre parole in fila non sono
+# una spia: «telefono, email e partita IVA» è un elenco di cose vere, e la
+# prima taratura sul corpus umano lo segnalava 249 volte. Quello che i modelli
+# producono in serie è la terna di AGGETTIVI, «indicizzato, pertinente e
+# leggibile», tre giudizi al posto di un fatto. In italiano l'aggettivo si
+# riconosce dalla coda, e questa è la differenza che il rilevatore deve fare.
+CODA_AGG = re.compile(r"(at[oaie]|it[oaie]|ut[oaie]|iv[oaie]|os[oaie]|bil[ei]|"
+                      r"ant[ei]|ent[ei]|ic[oaie]|al[ei]|ar[ei]|ile)$")
+RE_TERNA = re.compile(r"(?:^|[.;:!?]\s)([A-ZÀ-Ùa-zà-ù][^.;:!?\n]{3,28}), ([^.,;:!?\n]{3,28}), "
+                      r"([^.,;:!?\n]{3,28})\.")
+RE_CATENA_NEG = re.compile(r"\b(n[ée] [^.;:!?\n]{2,28} n[ée] [^.;:!?\n]{2,28}"
+                           r"|[Nn]iente [^.;:!?\n]{2,25}, niente [^.;:!?\n]{2,25}"
+                           r"|[Ss]enza [^.;:!?\n]{2,25}, senza [^.;:!?\n]{2,25}"
+                           r"|[Nn]on serve [^.;:!?\n]{2,25}, non serve )", re.I)
+
+# Soglie del canale 4. Misurate, non scelte: vedi --taratura.
+# ⚠️ Questi numeri sono MISURATI su 139 manoscritti (351.411 parole) con
+# `--taratura`, non scelti a occhio e non copiati da un progetto inglese. Chi
+# li cambia rifaccia quella misura: servono a tenere il falso allarme sul testo
+# umano sotto un file su dieci, che è la stessa logica del p90.
+ECO_FINESTRA = 150      # parole entro cui due copie dello stesso 3-gram contano
+ECO_MINIMO = 4          # copie che servono perché sia un'eco e non un termine tecnico
+ATTACCHI_MINIMO = 3     # frasi di fila che cominciano con la stessa parola
+RITMO_CV = 0.42         # sotto questo il ritmo è piatto (umano: mediana 0,58, p10 0,51)
+RITMO_FRASI = 10        # e sotto questo numero di frasi non si giudica
+RIDONDANZA_J = 0.52     # Jaccard fra due frasi vicine oltre cui è una ripetizione
+
+
+def _tok(t: str) -> list:
+    return [w.lower() for w in re.findall(r"[A-Za-zÀ-ÿ']{2,}", t)]
+
+
+def _contenuto(frase: str) -> set:
+    return {w for w in _tok(frase) if w not in STOP and len(w) >= 4}
+
+
+def canale4(t: str) -> list:
+    """Ritmo: le forme che si ripetono, non le parole che si ripetono."""
+    esiti = []
+    frasi = [f.strip() for f in re.split(r"(?<=[.!?])\s+", t) if f.strip()]
+
+    # --- eco di frase: lo stesso 3-gram di contenuto che torna ravvicinato.
+    tk = _tok(t)
+    pos = {}
+    for i in range(len(tk) - 2):
+        g = tuple(tk[i:i + 3])
+        if sum(1 for w in g if w not in STOP and len(w) >= 4) >= 2:
+            pos.setdefault(g, []).append(i)
+    for g, p in pos.items():
+        vicine = [p[j] for j in range(len(p)) if j and p[j] - p[j - 1] <= ECO_FINESTRA]
+        if len(vicine) + 1 >= ECO_MINIMO:
+            esiti.append(("eco", f"«{' '.join(g)}» ×{len(p)}"))
+
+    # --- attacchi uguali: tre frasi di fila che partono con la stessa parola.
+    #     È l'anafora, che in un discorso è buona e in un paragrafo di manuale
+    #     è la firma del modello che mette in fila le voci di un elenco.
+    run, prima = 1, None
+    for f in frasi + [""]:
+        w = (re.match(r"[A-Za-zÀ-ÿ']+", f) or [""])[0].lower() if f else None
+        if w and w == prima:
+            run += 1
+        else:
+            if run >= ATTACCHI_MINIMO and prima:
+                esiti.append(("attacchi", f"{run} frasi di fila attaccano con «{prima}»"))
+            run, prima = 1, w
+
+    # --- tricolon secco: tre parole sole in fila. Il tricolon con contenuto
+    #     resta fuori apposta (vedi la nota in cima).
+    for m in RE_TRICOLON.finditer(t):
+        g = [w.lower() for w in m.groups()]
+        if any(w in STOP for w in g):
+            continue
+        if all(CODA_AGG.search(w) for w in g):
+            esiti.append(("tricolon-secco", m.group(0)))
+    for m in RE_TERNA.finditer(t):
+        pezzi = [p.strip() for p in m.groups()]
+        # Due parole per membro al massimo: oltre, i tre membri portano
+        # ciascuno una cosa diversa ed è il tricolon buono, quello di Cicerone.
+        if all(len(p.split()) <= 2 for p in pezzi):
+            esiti.append(("terna", m.group(0).strip()[:120]))
+
+    # --- catena negata: «né X né Y», «niente X, niente Y». In inglese è
+    #     `no-x-no-y`; in italiano prende anche la forma con «né».
+    for m in RE_CATENA_NEG.finditer(t):
+        esiti.append(("catena-negata", m.group(0).strip()[:120]))
+
+    # --- coppie fisse.
+    for m in re.finditer(COPPIE, t, re.I):
+        esiti.append(("coppia-fissa", m.group(0)))
+
+    # --- ridondanza: due frasi vicine che dicono la stessa cosa.
+    for i in range(len(frasi) - 1):
+        a, b = _contenuto(frasi[i]), _contenuto(frasi[i + 1])
+        if len(a) >= 5 and len(b) >= 5:
+            j = len(a & b) / len(a | b)
+            if j >= RIDONDANZA_J:
+                esiti.append(("ridondanza", (frasi[i] + " ‖ " + frasi[i + 1])[:150]))
+
+    # --- sinonimia forzata: la stessa cosa chiamata in tre modi in poche righe.
+    for nome, gruppo in SINONIMI.items():
+        visti = {g for g in gruppo if re.search(rf"\b{g}\w{{0,3}}\b", t, re.I)}
+        if len(visti) >= 3:
+            esiti.append(("sinonimia", f"{nome}: {', '.join(sorted(visti))}"))
+
+    return esiti
+
+
+def ritmo(t: str) -> tuple:
+    """Quanto variano le frasi. Restituisce (numero di frasi, cv, piatto?)."""
+    lun = [len(_tok(f)) for f in re.split(r"(?<=[.!?])\s+", t) if len(_tok(f)) >= 3]
+    if len(lun) < RITMO_FRASI:
+        return len(lun), None, False
+    media = sum(lun) / len(lun)
+    var = sum((x - media) ** 2 for x in lun) / len(lun)
+    cv = (var ** 0.5) / media if media else 0
+    return len(lun), round(cv, 3), cv < RITMO_CV
+
+
+# --------------------------------------------------------------------------
+# CANALE 5 — FORMA: come è impaginato, non cosa dice.
+#
+# Gira sul SORGENTE e non sul testo estratto, perché queste spie stanno nei tag
+# e negli asterischi, che `testo()` butta via. Sono le «Style» e «Markup» di
+# WP:AISIGNS, che qui non c'erano.
+# --------------------------------------------------------------------------
+EMOJI = re.compile("[\U0001F300-\U0001FAFF←-⇿☀-➿⬀-⯿️]")
+
+# Soglie di forma, misurate sullo stesso corpus (p90). ⚠️ Il grassetto umano
+# qui sta a 19 ogni 1000 parole di mediana: la soglia di 12 che avevo messo a
+# occhio segnalava due terzi dei capitoli scritti a mano.
+GRASSETTO_X1000 = 50
+ETICHETTE_MINIMO = 9
+STACCHI_MINIMO = 4
+
+
+def canale5(src: str, percorso: str, n_parole: int, t: str = "") -> list:
+    esiti = []
+    md = not percorso.endswith(".html")
+
+    # --- grassetto sparso.
+    if md:
+        gr = re.findall(r"\*\*[^*\n]{2,80}\*\*", src)
+        eti = re.findall(r"(?m)^\s*[-*•]\s+\*\*[^*\n]{2,60}\*\*\s*[:—–-]", src)
+        tit = re.findall(r"(?m)^#{1,6}\s+(.+)$", src)
+        hr = len(re.findall(r"(?m)^\s*(?:---|\*\*\*|___)\s*$", src))
+        voci = re.findall(r"(?m)^\s*[-*•]\s+(.+)$", src)
+    else:
+        gr = re.findall(r"<(?:strong|b)\b[^>]*>(.{2,80}?)</(?:strong|b)>", src, re.S)
+        eti = re.findall(r"<li[^>]*>\s*<(?:strong|b)\b[^>]*>[^<]{2,60}</(?:strong|b)>\s*[:—–-]", src)
+        tit = re.findall(r"<h[1-6][^>]*>(.*?)</h[1-6]>", src, re.S)
+        hr = len(re.findall(r"<hr\b", src))
+        voci = [re.sub(r"<[^>]+>", " ", v) for v in
+                re.findall(r"<li[^>]*>(.*?)</li>", src, re.S)]
+
+    if n_parole >= 200 and len(gr) * 1000 / n_parole > GRASSETTO_X1000:
+        esiti.append(("grassetto", f"{len(gr)} grassetti su {n_parole} parole"))
+    if len(eti) >= ETICHETTE_MINIMO:
+        esiti.append(("etichetta-elenco", f"{len(eti)} voci «**Etichetta:** testo»"))
+    if hr >= STACCHI_MINIMO:
+        esiti.append(("linea-orizzontale", f"{hr} righe di stacco fra le sezioni"))
+
+    for h in tit:
+        h = re.sub(r"<[^>]+>", "", h).strip()
+        if EMOJI.search(h):
+            esiti.append(("emoji-titolo", h[:70]))
+        parole_h = re.findall(r"[A-Za-zÀ-ÿ']{4,}", h)
+        # Title Case: in italiano nel titolo la maiuscola va alla prima parola e
+        # ai nomi propri, e basta. «Errori e Best Practice» è inglese travestito.
+        #
+        # ⚠️ Ma «Core Web Vitals» e «Zero-Shot Prompting» sono termini tecnici
+        # inglesi, e maiuscoli stanno giusti. Il modo per distinguerli senza una
+        # lista di parole: guardare se quella parola, minuscola, compare nel
+        # corpo del testo. «errori» sì, «vitals» no. Una parola comune italiana
+        # messa in maiuscolo nel titolo si tradisce da sé.
+        if len(parole_h) >= 3 and all(w[0].isupper() for w in parole_h):
+            comuni = sum(1 for w in parole_h
+                         if re.search(rf"\b{re.escape(w.lower())}\b", t))
+            if comuni >= 2:
+                esiti.append(("titolo-inglese", h[:70]))
+
+    if len(voci) >= 4:
+        lun = [len(_tok(v)) for v in voci]
+        med = sum(lun) / len(lun)
+        if med >= 4 and max(lun) <= med * 1.35 and min(lun) >= med * 0.65:
+            esiti.append(("elenco-uniforme",
+                          f"{len(voci)} voci tutte lunghe uguale (~{med:.0f} parole)"))
+
+    curve = len(re.findall(r"[“”‘’]", src))
+    if curve >= 4:
+        esiti.append(("virgolette-curve", f"{curve} virgolette curve: qui si usano « » e \" \""))
+    return esiti
+
+
+# --------------------------------------------------------------------------
 # Le basi umane, per 10.000 parole. Tabella 1 e §7.8 del paper.
 # None = una base umana non esiste, e non se ne inventa una.
 # --------------------------------------------------------------------------
@@ -164,19 +425,16 @@ BASI = {
     "promozionale": (None, "il paper dichiara che per il promozionale una base umana pubblica non esiste"),
 }
 
-# Il genere si indovina dal percorso; --genere lo forza. Le voci qui sotto sono
-# un esempio: si adattano alle cartelle del proprio progetto, e quello che conta
-# è la mappa fra una cartella e uno dei generi di BASI.
+# Il genere si indovina dal percorso; --genere lo forza.
 GENERE_DA_PERCORSO = [
-    (r"(?i)(^|/)(wiki|enciclopedia|glossario|voci)/", "enciclopedico"),
-    (r"(?i)(^|/)(news|notizie|stampa|comunicati)/", "giornalistico"),
-    (r"(?i)(^|/)(paper|abstract|ricerca)/", "accademico"),
-    (r"(?i)(^|/)(corsi|lezioni|didattica|manuale|guide)/", "didattico"),
-    (r"(?i)(^|/)(racconti|narrativa|romanzo)/", "narrativo"),
-    (r"(?i)(^|/)(faq|forum|risposte|domande)/", "conversazionale"),
-    (r"(?i)(^|/)(discorsi|speech|keynote|video)/", "oratorio"),
-    (r"(?i)(^|/)(landing|vendita|prodotti|shop)/|index\.html$", "promozionale"),
-    (r"(?i)(^|/)(articoli|pubblicazioni|blog|saggi|libri)/", "argomentativo"),
+    (r"^wiki/", "enciclopedico"),
+    (r"^pubblicazioni/", "argomentativo"),
+    (r"^corsi/|^academy/corsi-fonte/", "didattico"),
+    (r"^(workshop|academy|calendario|scuole|corsi)/index\.html$", "promozionale"),
+    (r"^index\.html$|^(de|en|es|fr|pt)/", "promozionale"),
+    (r"^workshop/", "promozionale"),
+    (r"^_libri/", "argomentativo"),
+    (r"^_video-lezioni/", "oratorio"),
 ]
 
 
@@ -195,8 +453,14 @@ def parole(t: str) -> list:
 # --------------------------------------------------------------------------
 def testo(percorso: str) -> str | None:
     """Il testo che una persona legge. Il resto resta fuori."""
+    return leggi(percorso)[1]
+
+
+def leggi(percorso: str) -> tuple:
+    """(sorgente, testo). Il canale 5 guarda il sorgente: grassetti, elenchi e
+    titoli stanno nei tag, che `da_sorgente` butta via."""
     src = open(percorso, encoding="utf-8").read()
-    return da_sorgente(src, percorso)
+    return src, da_sorgente(src, percorso)
 
 
 def da_sorgente(src: str, percorso: str = "") -> str | None:
@@ -266,23 +530,56 @@ def canale2(t: str) -> dict:
 
 
 # --------------------------------------------------------------------------
-def analizza(percorso: str, t: str, genere: str | None) -> dict:
+# ⚠️ Sotto questo numero di parole le densità sono rumore: 3 formule in 60
+# parole fanno «50 ogni 1000», che non vuol dire niente. slopscore si astiene
+# sotto le 100 parole ed è la scelta giusta: qui si conta lo stesso, ma il
+# verdetto si sospende e la riga lo dice.
+MINIMO_PAROLE = 120
+
+
+def analizza(percorso: str, t: str, genere: str | None, src: str = "") -> dict:
     g = genere or genere_di(percorso)
     n = max(len(parole(t)), 1)
     c1, c1b, c2 = canale1(t), canale1b(t), canale2(t)
+    c4 = canale4(t)
+    c5 = canale5(src, percorso, n, t) if src else []
+    nfrasi, cv, piatto = ritmo(t)
     dens = round(len(c1) * 10000 / n, 1)
     base, fonte = BASI.get(g, (None, ""))
     ei = round(dens / base, 2) if base else None
     formule = sum(len(v) for v in c2.values())
+    corto = n < MINIMO_PAROLE
+
+    # Cancello di corroborazione (da slopscore): una spia sola non fa un
+    # verdetto. Tre canali su cinque sopra soglia sì. Serve a non mettere il
+    # bollino su una pagina che ha un tricolon e basta.
+    # Le soglie sono il p90 del corpus umano (vedi --taratura): un canale solo
+    # sopra il p90 capita a un testo umano su dieci, tre insieme quasi mai.
+    segnali = sum([
+        bool(ei and ei > 1.30),
+        formule * 1000 / n > 4.6,
+        len(c4) * 1000 / n > 1.8,
+        len(c5) >= 2,
+        bool(piatto),
+    ])
+    per_lente = {}
+    for k, _ in c4:
+        per_lente[k] = per_lente.get(k, 0) + 1
     return {
-        "file": percorso, "genere": g, "parole": n,
+        "file": percorso, "genere": g, "parole": n, "corto": corto,
         "epanortosi": len(c1), "densita": dens,
         "base_umana": base, "fonte_base": fonte, "indice": ei,
         "superfici": len(c1b),
         "formule": formule, "formule_x1000": round(formule * 1000 / n, 1),
         "per_tipo": {k: len(v) for k, v in c2.items() if v},
+        "ritmo": len(c4), "ritmo_x1000": round(len(c4) * 1000 / n, 1),
+        "per_lente": per_lente,
+        "forma": len(c5), "per_forma": {k: v for k, v in c5},
+        "frasi": nfrasi, "cv": cv, "ritmo_piatto": piatto,
+        "segnali": 0 if corto else segnali,
         "io": len(re.findall(IO, t, re.I)),
         "esempi_c1": c1[:12], "esempi_c1b": c1b[:12],
+        "esempi_c4": c4[:14], "esempi_c5": c5[:8],
         "esempi_c2": {k: [t[max(0, m.start() - 55):m.end() + 55].strip() for m in v[:4]]
                       for k, v in c2.items() if v},
     }
@@ -367,6 +664,72 @@ def confronta(prima: str, dopo: str, genere: str | None) -> int:
     return 0
 
 
+def taratura(cartella: str, genere: str | None) -> int:
+    """Le soglie dei canali 4 e 5, misurate su un corpus umano.
+
+    ⚠️ Serve a non importare dall'inglese un numero che in italiano non vale.
+    slopscore fissa le sue soglie su 180 documenti pre-LLM; qui il corpus umano
+    di riferimento sono i manoscritti di Federico, che è quello che il paper fa
+    col canale 1 e la Tabella 1. Si legge la mediana e il 90° percentile: la
+    soglia si mette al 90°, così nove testi umani su dieci restano sotto.
+    """
+    ris = []
+    for f in raccogli([cartella]):
+        try:
+            src, t = leggi(f)
+        except (UnicodeDecodeError, IsADirectoryError):
+            continue
+        if not t:
+            continue
+        r = analizza(f, t, genere, src)
+        if not r["corto"]:
+            ris.append(r)
+    if not ris:
+        print("Niente da misurare.")
+        return 1
+
+    def perc(v, q):
+        v = sorted(v)
+        return v[min(len(v) - 1, int(q * len(v)))]
+
+    print(f"\nCorpus umano: {len(ris)} file, {sum(r['parole'] for r in ris)} parole "
+          f"({cartella})\n")
+    print(f"{'misura':26}{'mediana':>10}{'p90':>10}{'max':>10}   soglia consigliata")
+    for nome, campo, verso in (("formule /1000", "formule_x1000", "su"),
+                               ("ritmo /1000", "ritmo_x1000", "su"),
+                               ("forma (conteggio)", "forma", "su"),
+                               ("cv delle frasi", "cv", "giu")):
+        v = [r[campo] for r in ris if r[campo] is not None]
+        if not v:
+            continue
+        if verso == "su":
+            print(f"{nome:26}{perc(v, .5):>10.2f}{perc(v, .9):>10.2f}{max(v):>10.2f}"
+                  f"   > {perc(v, .9):.1f}")
+        else:
+            print(f"{nome:26}{perc(v, .5):>10.2f}{perc(v, .1):>10.2f}{min(v):>10.2f}"
+                  f"   < {perc(v, .1):.2f}  (p10)")
+
+    agg = {}
+    for r in ris:
+        for k, n in r["per_lente"].items():
+            agg[k] = agg.get(k, 0) + n
+    tp = sum(r["parole"] for r in ris)
+    print("\n--- quanto scatta ogni lente sul testo umano (ogni 10.000 parole) ---")
+    print("    ⚠️ È il tasso di falsi allarmi di quella lente: alto = da leggere,")
+    print("       non da correggere. Stessa lettura della precisione 0,17 del paper.")
+    for k, n in sorted(agg.items(), key=lambda x: -x[1]):
+        print(f"{k:22}{n:5}   {n * 10000 / tp:6.1f}")
+    aggf = {}
+    for r in ris:
+        for k in r["per_forma"]:
+            aggf[k] = aggf.get(k, 0) + 1
+    if aggf:
+        print("\n--- forma: su quanti file dei %d scatta ---" % len(ris))
+        for k, n in sorted(aggf.items(), key=lambda x: -x[1]):
+            print(f"{k:22}{n:5}   {100 * n / len(ris):5.0f}%")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Misura la sbobba AI in un testo italiano.")
     ap.add_argument("percorsi", nargs="*", default=["."])
@@ -381,6 +744,9 @@ def main() -> int:
                     help="esce con 1 se un file supera queste formule ogni 1000 parole")
     ap.add_argument("--confronta", nargs=2, metavar=("PRIMA", "DOPO"),
                     help="mette a confronto due file o due cartelle e dice cosa e' cambiato")
+    ap.add_argument("--taratura", metavar="CARTELLA",
+                    help="misura le soglie dei canali 4 e 5 su un corpus umano "
+                         "(qui: _libri/*/manoscritto) invece di importarle dall'inglese")
     a = ap.parse_args()
 
     # ⚠️ Il confronto e' il modo in cui questo strumento serve davvero: da solo
@@ -389,36 +755,43 @@ def main() -> int:
     # ed e' l'unica domanda a cui una regex puo' rispondere bene.
     if a.confronta:
         return confronta(a.confronta[0], a.confronta[1], a.genere)
+    if a.taratura:
+        return taratura(a.taratura, a.genere)
 
     esiti, saltati = [], []
     if a.percorsi == ["-"]:
-        t = da_sorgente(sys.stdin.read(), "stdin.txt")
-        esiti.append(analizza("(stdin)", t, a.genere or "argomentativo"))
+        src = sys.stdin.read()
+        t = da_sorgente(src, "stdin.txt")
+        esiti.append(analizza("(stdin)", t, a.genere or "argomentativo", src))
     else:
         for f in raccogli(a.percorsi):
             try:
-                t = testo(f)
+                src, t = leggi(f)
             except (UnicodeDecodeError, IsADirectoryError):
                 continue
             if not t:
                 saltati.append(f)
                 continue
-            esiti.append(analizza(f, t, a.genere))
+            esiti.append(analizza(f, t, a.genere, src))
 
     if a.json:
         print(json.dumps({"file": esiti, "saltati": saltati}, ensure_ascii=False, indent=1))
         return 0
 
-    esiti.sort(key=lambda r: (-(r["indice"] or 0), -r["formule_x1000"]))
-    print(f"\n{'file':52}{'genere':16}{'parole':>7}{'epan':>5}{'/10k':>7}{'ind':>6}"
-          f"{'sup':>5}{'form':>6}{'/1k':>6}{'io':>4}")
+    esiti.sort(key=lambda r: (-r["segnali"], -(r["indice"] or 0), -r["formule_x1000"]))
+    print(f"\n{'file':44}{'genere':14}{'parole':>7}{'ind':>6}{'sup':>5}"
+          f"{'form':>6}{'/1k':>6}{'rip':>5}{'/1k':>6}{'forma':>6}{'cv':>6}{'io':>4}  ")
     for r in esiti:
         if a.soglia and (r["indice"] or 0) < a.soglia and r["formule_x1000"] < a.soglia:
             continue
         ind = "—" if r["indice"] is None else f"{r['indice']:.2f}"
-        print(f"{r['file'][:52]:52}{r['genere']:16}{r['parole']:7}{r['epanortosi']:5}"
-              f"{r['densita']:7}{ind:>6}{r['superfici']:5}{r['formule']:6}"
-              f"{r['formule_x1000']:6}{r['io']:4}")
+        cv = "—" if r["cv"] is None else f"{r['cv']:.2f}"
+        # Il bollino non lo dà un canale solo: ⚠ da tre segnali in su.
+        seg = "corto" if r["corto"] else ("⚠ " + "•" * r["segnali"] if r["segnali"] >= 3
+                                          else "•" * r["segnali"])
+        print(f"{r['file'][-44:]:44}{r['genere']:14}{r['parole']:7}{ind:>6}{r['superfici']:5}"
+              f"{r['formule']:6}{r['formule_x1000']:6}{r['ritmo']:5}{r['ritmo_x1000']:6}"
+              f"{r['forma']:6}{cv:>6}{r['io']:4}  {seg}")
 
     tot = {}
     for r in esiti:
@@ -427,6 +800,15 @@ def main() -> int:
     print("\n--- formule per tipo ---")
     for k, v in sorted(tot.items(), key=lambda x: -x[1]):
         print(f"{k:22}{v}")
+    for etichetta, campo in (("ritmo e ripetizione", "per_lente"), ("forma", "per_forma")):
+        agg = {}
+        for r in esiti:
+            for k in r[campo]:
+                agg[k] = agg.get(k, 0) + (1 if campo == "per_forma" else r[campo][k])
+        if agg:
+            print(f"\n--- {etichetta} ---")
+            for k, v in sorted(agg.items(), key=lambda x: -x[1]):
+                print(f"{k:22}{v}")
     pw = sum(r["parole"] for r in esiti)
     pe = sum(r["epanortosi"] for r in esiti)
     print(f"\nfile: {len(esiti)}   parole: {pw}   epanortosi: {pe}"
@@ -435,6 +817,13 @@ def main() -> int:
     print("      1,00 = come scrive una persona in quel genere. Sopra = correzione al rialzo di troppo.")
     print("      «—» = per quel genere una base umana pubblica non esiste (promozionale).")
     print("sup = altre superfici della stessa figura: da leggere, non da azzerare.")
+    print("rip = canale 4, ritmo: echi, attacchi uguali, tricolon secchi, terne, catene")
+    print("      negate, coppie fisse, ridondanze, sinonimia forzata.")
+    print("forma = canale 5: grassetto sparso, elenchi a etichetta, elenchi tutti uguali,")
+    print("      emoji e Title Case nei titoli, virgolette curve, righe di stacco.")
+    print("cv = quanto variano le frasi. Sotto 0,42 il ritmo è piatto; il testo umano")
+    print("      di riferimento sta sopra (vedi --taratura).")
+    print("⚠ = tre canali su cinque sopra soglia. Un canale solo non fa un verdetto.")
     if saltati:
         print(f"⚠️ saltati (né <article> né corpo fra </nav> e <footer>): {len(saltati)}")
         for f in saltati[:8]:
@@ -449,7 +838,8 @@ def main() -> int:
     if a.frasi:
         print("\n=== righe da rivedere ===")
         for r in esiti:
-            if not (r["esempi_c1"] or r["esempi_c1b"] or r["esempi_c2"]):
+            if not (r["esempi_c1"] or r["esempi_c1b"] or r["esempi_c2"]
+                    or r["esempi_c4"] or r["esempi_c5"]):
                 continue
             print(f"\n## {r['file']}  [{r['genere']}]")
             for tipo, s in r["esempi_c1"]:
@@ -459,6 +849,13 @@ def main() -> int:
             for k, ss in r["esempi_c2"].items():
                 for s in ss:
                     print(f"  form [{k}] …{re.sub(chr(10), ' ', s)[:130]}…")
+            for tipo, s in r["esempi_c4"]:
+                print(f"  rip  [{tipo}] {re.sub(chr(10), ' ', s)[:150]}")
+            for tipo, s in r["esempi_c5"]:
+                print(f"  forma[{tipo}] {re.sub(chr(10), ' ', s)[:150]}")
+            if r["ritmo_piatto"]:
+                print(f"  rip  [ritmo-piatto] {r['frasi']} frasi, cv {r['cv']}: "
+                      f"lunghezze tutte uguali")
 
     if sopra:
         unici = sorted(set(sopra))

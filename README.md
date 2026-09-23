@@ -47,8 +47,8 @@ Nel repo c'è un file di prova per capire come usarlo
 ```
 $ python3 skills/niente-sbobba/sbobba.py --frasi esempi/sbobba.txt
 
-file                 genere        parole epan   /10k  ind  sup  form   /1k  io
-esempi/sbobba.txt    promozionale      90    2  222.2    —    1    11 122.2   0
+file              genere        parole  ind  sup  form   /1k  rip  /1k forma  cv  io
+esempi/sbobba.txt promozionale      90    —    1    11 122.2    0  0.0     0   —   0  corto
 
 --- formule per tipo ---
 riempitivi 1   svuotaverbi 1   permette-di 1   la-chiave 1   mondo-oggi 1
@@ -58,11 +58,40 @@ schiarirsi-la-voce 1   finta-rivelazione 1
   EPAN [non…, è] Non è un corso, è
   EPAN [frase negata + affermata] Non è un corso, è un percorso di crescita. Gli
        esperti concordano: la chiave è partire dal lavoro vero.
+  sup  [negazione interna + affermazione] Il futuro della formazione non sta
+       arrivando. È già qui.
+  form [mondo-oggi] …Nel mondo di oggi la formazione aziendale rappresenta…
 ```
 
-`ind` è l'indice calcolato rispetto alla baseline umana per genere, `sup` le altre superfici della
-figura, `form` le formule, `io` i segni della prima persona. **Se `io` ti esce
-zero, il tuo testo parla come un manuale, può essere positivo o negativo, chiaramente dipende dai casi d'uso**.
+L'altro file di prova, `esempi/sbobba-ritmo.txt`, ha il lessico più pulito e si
+fa prendere dai canali nuovi: la stessa cosa chiamata in quattro modi, le coppie
+fisse, i tre aggettivi in fila, la catena negata e le frasi tutte lunghe uguale.
+
+```
+$ python3 skills/niente-sbobba/sbobba.py --frasi esempi/sbobba-ritmo.txt
+
+file                                        genere         parole   ind  sup  form   /1k  rip   /1k forma    cv  io  
+esempi/sbobba-ritmo.txt                     promozionale      180     —    1    13  72.2    9  50.0     0  0.32   0  ⚠ •••
+## esempi/sbobba-ritmo.txt  [promozionale]
+
+  rip  [tricolon-secco] misurabili, verificabili e sostenibili
+  rip  [catena-negata] Non serve un budget enorme, non serve
+  rip  [coppia-fissa] pratico e concreto
+  rip  [coppia-fissa] chiaro e diretto
+  rip  [coppia-fissa] rapido ed efficace
+  rip  [coppia-fissa] flessibile e scalabile
+  rip  [sinonimia] percorso: cammino, percorso, viaggio
+  rip  [sinonimia] strumento: risorsa, soluzione, strumento
+  rip  [sinonimia] metodo: approccio, metodo, paradigma
+  rip  [ritmo-piatto] 12 frasi, cv 0.322: lunghezze tutte uguali
+```
+
+`ind` è l'indice calcolato rispetto alla baseline umana per genere, `sup` le altre
+superfici della figura, `form` le formule, `rip` il ritmo, `forma` l'impaginazione,
+`cv` quanto variano le lunghezze delle frasi, `io` i segni della prima persona.
+**Se `io` ti esce zero, il tuo testo parla come un manuale, può essere positivo o
+negativo, chiaramente dipende dai casi d'uso**. `corto` vuol dire che sotto le 120
+parole il verdetto si sospende: su novanta parole una densità non vuol dire niente.
 
 Niente sbobba gira su `.html`, `.md`, `.txt` e da standard input, ed è Python 3 senza
 dipendenze.
@@ -107,6 +136,76 @@ qualunque strumento.
 | Codex, Cursor, e chi legge `AGENTS.md` | clona il repo: il file in radice punta già alle istruzioni |
 | ChatGPT, Gemini, altri | carica `SKILL.md` e i tre file di `riferimenti/` in un progetto |
 | Senza nessun modello | `python3 sbobba.py --frasi testo.md` |
+
+## Cosa guarda, oltre alle parole
+
+Le liste anti-slop guardano il **lessico**: una parola c'è o non c'è. Ma un testo
+può avere il lessico pulito e suonare lo stesso di macchina, perché il difetto sta
+nel disegno delle frasi. Quindi qui i canali sono cinque.
+
+| Canale | Cosa prende |
+| --- | --- |
+| 1 — **epanortosi** | «non è X, è Y», e le altre superfici della stessa figura |
+| 2 — **formule** | il lessico: «rappresenta», «permette di», «Ecco», i trattini lunghi `—` |
+| 3 — **prima persona** | quante volte l'autore c'è. A zero il testo è un manuale |
+| 4 — **ritmo** | echi, attacchi uguali, tricolon secchi, catene negate, ridondanze, sinonimia forzata, frasi tutte lunghe uguale |
+| 5 — **forma** | grassetto sparso, elenchi a etichetta, elenchi tutti uguali, Title Case, emoji nei titoli, virgolette curve |
+
+Sì: **i trattini lunghi li toglie** (canale 2), e da adesso prende anche **le
+ripetizioni e le elencazioni** (canale 4), che prima gli sfuggivano.
+
+### Due cose che ho dovuto capovolgere passando all'italiano
+
+**La «elegant variation» va al contrario.** In inglese lo stile chiede di
+ripetere la stessa parola, e i linter anti-slop segnalano chi gira i sinonimi. In
+italiano la scuola insegna l'opposto, la *variatio*, e chi scrive «corso» cinque
+volte di fila scrive bene lo stesso. Quindi qui un sostantivo ripetuto **non** si
+segnala. Si segnala il contrario: la stessa cosa chiamata in quattro modi in
+poche righe — «il percorso… il cammino… il viaggio… l'iter» — che è la forma che
+la ripetizione prende in italiano, mascherata da eleganza.
+
+**Il tricolon non è un difetto.** Tre membri che portano tre fatti diversi è
+retorica buona e sta in Cicerone. La prima versione, che segnalava qualunque
+terna, dava **249 falsi allarmi** sul mio corpus: prendeva «telefono, email e
+partita IVA», che è un elenco di cose vere. Quello che i modelli producono in
+serie è la terna di **aggettivi**, tre giudizi al posto di un fatto
+(«flessibile, scalabile e affidabile»). In italiano l'aggettivo si riconosce
+dalla coda (`-ato`, `-ivo`, `-bile`, `-ente`), e adesso scatta solo se ce l'hanno
+tutti e tre. Da 249 a 22.
+
+### Le soglie non le ho scelte, le ho misurate
+
+```bash
+python3 sbobba.py --taratura miei-testi/
+```
+
+Prende un corpus di roba scritta a mano — la tua — e stampa, per ogni lente,
+**quanto scatta su testo umano**. Quella colonna è il tasso di falsi allarmi
+della lente, e si legge come la precisione 0,17 qui sotto: una lente rumorosa dà
+candidati da leggere, non errori da correggere. Le soglie di serie stanno al 90°
+percentile di 139 miei capitoli, 351.411 parole, così nove testi scritti a mano
+su dieci restano sotto.
+
+Esempio di cosa ti dice, e di come mi ha fatto cambiare idea: il grassetto umano
+nei miei capitoli sta a **19 ogni 1000 parole** di mediana. La soglia di 12 che
+avevo messo a occhio segnalava due terzi dei capitoli che avevo scritto io.
+
+E c'è un **cancello di corroborazione**: il `⚠` compare solo quando tre canali su
+cinque stanno sopra soglia. Una spia sola non fa un verdetto.
+
+### Da dove ho preso le idee
+
+Il canale 4 e il canale 5 non li ho inventati. Ho guardato lo stato dell'arte
+inglese e ho ritarato quello che aveva senso:
+[WP:AISIGNS](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) della
+squadra di pulizia di Wikipedia (la sezione *Style* e *Markup*),
+[sloplint](https://github.com/benjaminjackson/sloplint) (`phrase-echo`,
+`rule-of-three`, `no-x-no-y`, la dimensione *cadence*),
+[slopscore](https://github.com/jman4162/slopscore) (l'astensione sotto le 100
+parole, il cancello di corroborazione, i profili per genere, la pubblicazione dei
+falsi positivi per regola) e [no-slop](https://github.com/Byk3y/no-slop) (le
+*structural formulas*). Quello che ho aggiunto è la taratura sull'italiano e le
+due inversioni qui sopra.
 
 ## Come decido quanto togliere
 

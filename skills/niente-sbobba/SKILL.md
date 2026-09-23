@@ -29,7 +29,17 @@ meglio Y», «definirlo X è riduttivo», «quello che sembra X in realtà è Y�
 Chi toglie solo la prima ottiene un testo che dice la stessa cosa con un'altra
 faccia. Si guarda il movimento, non la stringa.
 
-**3. Il rilevatore sbaglia sul testo umano, ed è misurato.** Contro 206 finestre
+**3. La sbobba non sta solo nelle parole, sta nella forma.** Un testo può avere
+il lessico pulito e suonare lo stesso di macchina, perché il difetto sta nel
+disegno delle frasi: lo stesso attacco tre volte di fila, tre aggettivi in fila
+al posto di un fatto, due frasi vicine che dicono la stessa cosa, frasi tutte
+lunghe uguale. È il **canale 4** (`rip`) e il **canale 5** (`forma`), e le regole
+stanno in `riferimenti/ritmo.md`. ⚠️ Due lenti che girano in inglese qui sono
+capovolte: in italiano un sostantivo ripetuto **non** è un difetto (la variatio
+è quello che insegna la scuola), e un tricolon **non** è un difetto finché i tre
+membri portano tre fatti diversi.
+
+**4. Il rilevatore sbaglia sul testo umano, ed è misurato.** Contro 206 finestre
 annotate a mano la precisione è **0,82 sul testo generato e 0,17 su quello
 umano**: le persone usano gli stessi marcatori per un contrasto qualsiasi. Da qui
 la regola operativa: su un testo scritto da una persona una spia è un indizio da
@@ -66,8 +76,23 @@ una prova che si può controllare. Alla fine offri la revisione.
 
    Le colonne: `ind` è l'Indice di epanortosi, cioè la densità del file diviso
    la base umana del suo genere. `sup` sono le altre superfici della figura, da
-   leggere. `form` sono le formule lessicali. `io` conta i segni della prima
-   persona: a zero, il testo parla come un manuale.
+   leggere. `form` sono le formule lessicali. `rip` è il ritmo (echi, attacchi
+   uguali, tricolon secchi, catene negate, ridondanze, sinonimia forzata).
+   `forma` è l'impaginazione (grassetto sparso, elenchi a etichetta, Title Case,
+   emoji nei titoli). `cv` dice quanto variano le frasi: sotto 0,42 il ritmo è
+   piatto, il testo umano di riferimento sta a 0,58. `io` conta i segni della
+   prima persona: a zero, il testo parla come un manuale.
+
+   ⚠️ **Il `⚠` in fondo alla riga vuole tre canali su cinque sopra soglia**, e
+   un canale solo non fa un verdetto. Sotto le 120 parole la riga dice `corto` e
+   il verdetto si sospende: su sessanta parole una densità non vuol dire niente.
+
+   ⚠️ **Le soglie dei canali 4 e 5 sono misurate**, non importate dall'inglese:
+   `sbobba.py --taratura <cartella>` le rimisura sul tuo corpus umano (i testi
+   che hai scritto tu) e stampa, per ogni lente, quanto scatta su testo scritto
+   a mano. Quella colonna è il tasso di falsi allarmi della lente, e si legge
+   come la precisione 0,17 del paper: una lente rumorosa dà candidati da
+   leggere, non errori da correggere.
 
 ## Come si rivede
 
@@ -120,9 +145,21 @@ una prova che si può controllare. Alla fine offri la revisione.
   scrive, restano. Non si sostituiscono con qualcosa di più professionale.
 - **La struttura resta**, a meno che stia facendo male al pezzo. Se la cambi, lo
   scrivi in «Cosa ho cambiato».
+- **Il ritmo si sistema unendo e spezzando, non allungando.** Un paragrafo con
+  tutte le frasi della stessa lunghezza si aggiusta unendo due frasi che parlano
+  della stessa cosa e spezzando quella che porta il punto. Non si allunga una
+  frase per far variare un numero.
+- **Tre aggettivi in fila diventano un fatto.** «Flessibile, scalabile e
+  affidabile» si taglia e si scrive cosa regge: «Tiene 500 utenti insieme».
+- **Un nome solo per una cosa sola.** «Il percorso… il cammino… il viaggio…
+  l'iter» è la ripetizione mascherata da variatio. Scegli il nome e tienilo; se
+  servono due nomi è perché sono due cose, e allora si dice la differenza.
+- **Se sono voci di un elenco, scrivile come elenco.** Tre frasi di fila con lo
+  stesso attacco sono un elenco che finge di essere prosa.
 
 Il lessico da tagliare, con le eccezioni, sta in `riferimenti/formule.md`.
 Le forme dell'epanortosi e i tassi per genere in `riferimenti/epanortosi.md`.
+Ripetizioni, elencazioni, ritmo e impaginazione in `riferimenti/ritmo.md`.
 La voce di Federico e i testi intoccabili in `riferimenti/voce.md`.
 
 ## Le formule, in breve

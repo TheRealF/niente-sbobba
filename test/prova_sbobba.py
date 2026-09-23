@@ -210,6 +210,96 @@ prova("confronto: al contrario segnala il peggioramento", codice == 1)
 prova("confronto: lo dice a schermo", "PEGGIO" in uscita)
 
 # ---------------------------------------------------------------------------
+# CANALE 4 — ritmo, ripetizione, elencazione.
+# ⚠️ Ogni lente entra con un caso che DEVE scattare e uno che NON deve, perché
+# qui il rischio è tutto sul secondo: queste lenti girano su forme che la prosa
+# italiana usa per mestiere.
+def ritmo_lenti(t):
+    return {k for k, _ in sb.canale4(t)}
+
+
+prova("tricolon: tre aggettivi scattano",
+      "tricolon-secco" in ritmo_lenti("Una soluzione flessibile, scalabile e affidabile."))
+prova("tricolon: tre NOMI non scattano (è un elenco di cose vere)",
+      "tricolon-secco" not in ritmo_lenti("Lascia telefono, email e indirizzo."))
+prova("tricolon: tre membri con contenuto non scattano",
+      "terna" not in ritmo_lenti("Registra chi è entrato, che cosa ha aperto, "
+                                 "che cosa ha modificato."))
+prova("terna: tre membri secchi scattano",
+      "terna" in ritmo_lenti("Il metodo. Analisi, progetto, verifica."))
+
+prova("catena negata: «né X né Y» scatta",
+      "catena-negata" in ritmo_lenti("Non serve né un budget né un team dedicato."))
+prova("catena negata: «niente X, niente Y» scatta",
+      "catena-negata" in ritmo_lenti("Niente fronzoli, niente giri di parole, si parte."))
+
+prova("sinonimia: tre nomi per la stessa cosa scattano",
+      "sinonimia" in ritmo_lenti("Il percorso è un cammino lungo. Questo viaggio "
+                                 "si fa in tre tappe."))
+prova("sinonimia: due nomi soli non scattano",
+      "sinonimia" not in ritmo_lenti("Il percorso è un cammino lungo, e si fa in tre tappe."))
+prova("variatio: lo stesso nome ripetuto NON è un difetto in italiano",
+      ritmo_lenti("Il corso dura sei mesi. Il corso costa 890 euro. "
+                  "Il corso si fa la sera.") <= {"attacchi"})
+
+prova("coppia fissa: «rapido ed efficace» scatta",
+      "coppia-fissa" in ritmo_lenti("Un metodo rapido ed efficace."))
+
+prova("attacchi: tre frasi con lo stesso attacco scattano",
+      "attacchi" in ritmo_lenti("Serve un metodo. Serve un obiettivo. Serve tempo."))
+prova("attacchi: due sole non scattano",
+      "attacchi" not in ritmo_lenti("Serve un metodo. Serve un obiettivo. Poi si parte."))
+
+prova("ridondanza: due frasi che dicono la stessa cosa scattano",
+      "ridondanza" in ritmo_lenti(
+          "L'adozione dell'intelligenza artificiale riduce i tempi della revisione "
+          "aziendale. La revisione aziendale riduce i tempi grazie all'adozione "
+          "dell'intelligenza artificiale."))
+
+# ritmo piatto: quindici frasi tutte da undici parole contro quindici frasi vere.
+piatto = " ".join(["Il metodo prevede una analisi iniziale seguita da una verifica finale."] * 3
+                  + ["Ogni fase richiede una misura precisa seguita da una prova sul campo."] * 3
+                  + ["La squadra raccoglie i dati oppure li confronta con quelli passati."] * 3
+                  + ["Il cliente riceve un documento oppure una scheda con i numeri."] * 3)
+_, cv_piatto, flag = sb.ritmo(piatto)
+prova("ritmo: frasi tutte uguali danno cv basso", flag is True)
+vario = ("Basta. Il metodo prevede una analisi iniziale, una verifica intermedia e una "
+         "prova sul campo che dura tre settimane e coinvolge due persone. Poi si guarda. "
+         "Se i numeri non tornano si rifà tutto da capo, con calma, partendo dal punto "
+         "in cui si era rotto qualcosa. Capita. Non sempre, ma capita, e quando capita "
+         "conviene fermarsi invece di tirare dritto. Si riparte il lunedì dopo.")
+_, cv_vario, flag_v = sb.ritmo(vario)
+prova("ritmo: frasi di lunghezza varia non scattano", flag_v is False)
+
+# CANALE 5 — forma.
+def forma_lenti(src, t="", n=500):
+    return {k for k, _ in sb.canale5(src, "x.md", n, t)}
+
+
+prova("Title Case italiano scatta",
+      "titolo-inglese" in forma_lenti("# Aspetti Etici e Legali\n\nGli aspetti "
+                                      "etici sono tanti, quelli legali pure.",
+                                      "gli aspetti etici sono tanti quelli legali pure"))
+# ⚠️ «Errori e Best Practice» NON scatta, ed è giusto: due parole su tre sono un
+# termine inglese, e il rilevatore non ha come saperlo con sicurezza. Meglio
+# perderne uno che segnalare «Core Web Vitals».
+prova("termine tecnico inglese in maiuscolo NON scatta",
+      "titolo-inglese" not in forma_lenti("# Core Web Vitals\n\nSono tre misure.",
+                                          "sono tre misure"))
+prova("grassetto nella norma umana non scatta",
+      "grassetto" not in forma_lenti("**uno** e **due** testo", "", 500))
+prova("elenco con voci tutte uguali scatta",
+      "elenco-uniforme" in forma_lenti(
+          "- La prima voce dice una cosa chiara\n"
+          "- La seconda voce dice altro chiaro\n"
+          "- La terza voce dice ancora altro\n"
+          "- La quarta voce chiude il discorso\n"))
+
+# Corroborazione e astensione.
+r = sb.analizza("x.md", "Testo cortissimo e fondamentale.", "argomentativo", "")
+prova("astensione: sotto 120 parole il verdetto si sospende", r["corto"] and r["segnali"] == 0)
+
+# ---------------------------------------------------------------------------
 falliti = [n for n, ok in esiti if not ok]
 print(f"\n{len(esiti) - len(falliti)}/{len(esiti)} casi a posto")
 for n in falliti:
